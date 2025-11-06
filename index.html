@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - Next-Gen Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#home" class="logo">
+                    <i class="fas fa-graduation-cap"></i> Campus Connect
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#home">🏠 Home</a></li>
+                    <li><a href="#features">🧩 Features</a></li>
+                    <li><a href="#about">ℹ️ About</a></li>
+                    <li><a href="#contact">📞 Contact Us</a></li>
+                </ul>
+               <div class="nav-buttons">
+    <a href="login.html" class="btn highlight">🔑 Login</a>
+    <a href="register.html" class="btn btn-secondary">✍️ Register</a>
+</div>
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Your Academic Life, Simplified.</h1>
+            <p>A unified, intelligent platform connecting students, faculty, and administration for seamless learning and collaboration.</p>
+            <div class="hero-buttons">
+    <button class="btn btn-primary" onclick="window.location.href='register.html'">🔐 Get Started for Students</button>
+    <button class="btn btn-secondary" onclick="window.location.href='register.html'">🧑‍🏫 Portal for Faculty & Staff</button>
+</div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Core Features that Elevate Your Campus Experience</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Digital Course Hub</h3>
+                    <p>Access lecture materials, submit assignments, and review syllabi in one central place.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Performance Tracking</h3>
+                    <p>Monitor your grades, attendance, and overall academic progress effortlessly and transparently.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>Smart Notifications</h3>
+                    <p>Never miss a deadline or event with personalized alerts and campus announcements.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Integrated Scheduling</h3>
+                    <p>Sync your class schedule, exam dates, and campus events to your personal calendar.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Digital Comms Hub</h3>
+                    <p>Instant chat, dedicated course channels, and video conferencing integration.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-question-circle"></i>
+                    <h3>Ask Doubts (Q&A)</h3>
+                    <p>Post academic questions and get verified answers from faculty and peers quickly.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h3>Resource Library</h3>
+                    <p>Centralized repository for all college forms, past papers, and departmental documents.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-briefcase"></i>
+                    <h3>Career Services</h3>
+                    <p>Access job boards, internship opportunities, and schedule counseling sessions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Our Mission: Empowering Academic Excellence</h2>
+            <p>Campus Connect was founded on the principle that technology should simplify, not complicate, academic life. We are dedicated to providing a secure, intuitive, and comprehensive platform that fosters a dynamic and connected learning environment for everyone in the institution.</p>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="container">
+            <h2>What Our Users Say</h2>
+            <div class="features-grid"> 
+                <div class="testimonial">
+                    <p>“The interface is incredibly clean and intuitive. Finding my course materials used to be a chore, now it's instant. A game-changer for my study routine!”</p>
+                    <cite>– Alex R., Final Year Student</cite>
+                </div>
+                <div class="testimonial">
+                    <p>“Managing multiple classes and communicating with hundreds of students is streamlined perfectly. The announcement feature saves me hours every week.”</p>
+                    <cite>– Dr. Priya S., Head of Computer Science</cite>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Ready to Connect? Get in Touch!</h2>
+            <form class="contact-form" onsubmit="handleSubmit(event)">
+                <p class="contact-info" style="text-align: center; color: var(--primary-color); font-weight: 600;">
+                    <i class="fas fa-envelope"></i> support@campusconnect.com | 
+                    <i class="fas fa-phone-alt"></i> +91-9876543210
+                </p>
+                <input type="text" placeholder="Your Full Name" required>
+                <input type="email" placeholder="Your Professional Email" required>
+                <textarea placeholder="Your Message/Inquiry..." required></textarea>
+                <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Send Inquiry</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Security</a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            <p>© 2025 Campus Connect. All Rights Reserved. Built with 💙.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

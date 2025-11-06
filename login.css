@@ -1,0 +1,71 @@
+/* Note: This assumes CSS variables (--primary-color, --shadow-lift, etc.) 
+   are already defined in the shared style.css file. */
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-mid);
+    padding: 100px 25px 50px; 
+}
+.login-panel {
+    background-color: var(--background-light);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lift);
+    padding: 50px 40px;
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+}
+.login-panel h2 {
+    font-size: 32px;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    padding-bottom: 0;
+}
+.login-panel h2::after {
+    content: none;
+}
+.login-panel .subtitle {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+/* Form Styling */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+}
+#login-form input {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease;
+}
+#login-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Helper Links */
+.helper-links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.helper-links a {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+.helper-links a:hover {
+    color: var(--accent-color-1);
+}

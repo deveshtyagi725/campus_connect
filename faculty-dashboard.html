@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect - Faculty Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> 
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* CSS Variables (Assuming defined in style.css) */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-dark: #0056b3;
+            --accent-color-1: #ff6b35; /* Orange/Highlight */
+            --accent-color-2: #28a745; /* Green */
+            --text-color-dark: #212529;
+            --background-light: #ffffff;
+            --background-mid: #f4f7fa;
+            --shadow-light: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* --- Layout Consistency --- */
+        body { font-family: 'Poppins', sans-serif; background-color: var(--background-mid); }
+        .btn-action { /* Custom button for smaller actions */
+            padding: 8px 15px;
+            font-size: 13px;
+            border-radius: 5px;
+            text-transform: capitalize;
+        }
+
+        /* Header Styles (Copied from Student Dashboard for consistency) */
+        header { background-color: var(--background-light); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .user-menu a.profile-link { font-weight: 600; color: var(--text-color-dark); }
+        .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: var(--primary-color); }
+        .btn-secondary { background-color: var(--accent-color-1); color: white; box-shadow: none; }
+        .btn-secondary:hover { background-color: #e55a2b; }
+
+        /* Sidebar Styles (Copied from Student Dashboard) */
+        .sidebar { width: 280px; background-color: var(--background-light); box-shadow: 4px 0 10px rgba(0,0,0,0.1); position: fixed; height: 100vh; top: 66px; left: 0; padding: 30px 20px; overflow-y: auto; transition: transform 0.3s ease; }
+        .sidebar h3 { margin-bottom: 25px; color: var(--primary-color); font-weight: 700; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .sidebar ul { list-style: none; }
+        .sidebar a { display: flex; align-items: center; padding: 12px 15px; border-radius: 8px; transition: background-color 0.3s ease, color 0.3s ease; font-weight: 500; gap: 15px; }
+        .sidebar a:hover { background-color: var(--background-mid); color: var(--primary-color); }
+        .sidebar a.active { background-color: var(--primary-color); color: white; font-weight: 600; box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3); }
+
+        /* Main Content */
+        .main-content { margin-left: 280px; margin-top: 66px; padding: 30px; }
+        .dashboard-header { margin-bottom: 40px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
+        .dashboard-header p { font-size: 18px; color: #6c757d; }
+        
+        /* Summary Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .summary-card {
+            background-color: var(--background-light);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+        .summary-card:hover { transform: translateY(-5px); }
+        .summary-card i {
+            font-size: 36px;
+            color: var(--accent-color-1);
+            margin-bottom: 10px;
+        }
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+        .summary-card .label {
+            font-size: 15px;
+            color: #6c757d;
+        }
+        
+        /* Main Content Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Two main columns for content */
+            gap: 30px;
+        }
+        
+        /* General Card Styles */
+        .content-card {
+            background-color: var(--background-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 30px;
+            border-top: 5px solid var(--primary-color);
+        }
+        .content-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Table Styles (for Courses and Assignments) */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .data-table th {
+            background-color: var(--background-mid);
+            color: var(--text-color-dark);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        /* Recent Activity / Announcements */
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item .time {
+            font-size: 12px;
+            color: var(--accent-color-1);
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); top: 66px; box-shadow: none; z-index: 999; }
+            .sidebar.active { transform: translateX(0); box-shadow: 4px 0 10px rgba(0,0,0,0.3); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .main-grid { grid-template-columns: 1fr; }
+            .summary-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+    </style>
+</head>
+<body onload="loadUserData()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <a href="digital.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <h3><i class="fas fa-th-large"></i> Faculty Portal</h3>
+        <ul>
+            <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard (Home)</a></li>
+            <li><a href="#"><i class="fas fa-book"></i> My Courses</a></li>
+            <li><a href="#"><i class="fas fa-upload"></i> Assignments</a></li>
+            <li><a href="#"><i class="fas fa-user-graduate"></i> Student List</a></li>
+            <li><a href="#"><i class="fas fa-bullhorn"></i> Announcements</a></li>
+            <li><a href="#"><i class="fas fa-file-signature"></i> Gradebook</a></li>
+            <li><a href="#"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+            <li><a href="#"><i class="fas fa-comments"></i> Messages</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="digital.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1 id="welcome-message">👋 Welcome, Professor!</h1>
+            <p>Here's your quick overview of course activities and required actions for today.</p>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card" style="border-top: 5px solid var(--primary-color);">
+                <i class="fas fa-book"></i>
+                <span class="value">4</span>
+                <span class="label">Total Courses</span>
+            </div>
+            <div class="summary-card" style="border-top: 5px solid var(--accent-color-1);">
+                <i class="fas fa-upload"></i>
+                <span class="value">12</span>
+                <span class="label">Submissions Pending</span>
+            </div>
+            <div class="summary-card" style="border-top: 5px solid var(--accent-color-2);">
+                <i class="fas fa-calendar-alt"></i>
+                <span class="value">2</span>
+                <span class="label">Upcoming Classes</span>
+            </div>
+            <div class="summary-card" style="border-top: 5px solid #6c757d;">
+                <i class="fas fa-user-graduate"></i>
+                <span class="value">180</span>
+                <span class="label">Students Enrolled</span>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div>
+                <div class="content-card">
+                    <h2><i class="fas fa-book"></i> My Active Courses</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Course Name</th>
+                                <th>Students</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CS301</td>
+                                <td>Data Structures</td>
+                                <td>45</td>
+                                <td><button class="btn btn-primary btn-action">Manage</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS405</td>
+                                <td>Advanced Algorithms</td>
+                                <td>30</td>
+                                <td><button class="btn btn-primary btn-action">Manage</button></td>
+                            </tr>
+                            <tr>
+                                <td>GE102</td>
+                                <td>Digital Ethics</td>
+                                <td>75</td>
+                                <td><button class="btn btn-primary btn-action">Manage</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-card" style="border-top-color: var(--accent-color-1);">
+                    <h2><i class="fas fa-upload"></i> Assignments Awaiting Grading</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Assignment</th>
+                                <th>Course</th>
+                                <th>Due Date</th>
+                                <th>Pending</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lab 3 Report</td>
+                                <td>CS301</td>
+                                <td>08 Nov 2025</td>
+                                <td>12</td>
+                                <td><button class="btn btn-secondary btn-action" style="background-color: var(--accent-color-1);">Grade Now</button></td>
+                            </tr>
+                            <tr>
+                                <td>Midterm Project</td>
+                                <td>CS405</td>
+                                <td>15 Nov 2025</td>
+                                <td>5</td>
+                                <td><button class="btn btn-secondary btn-action" style="background-color: var(--primary-color);">View All</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary" style="margin-top: 20px;"><i class="fas fa-plus"></i> Create New Assignment</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="content-card">
+                    <h2><i class="fas fa-chart-bar"></i> Avg. Performance Snapshot</h2>
+                    <canvas id="performanceChart" width="400" height="250"></canvas>
+                </div>
+
+                <div class="content-card" style="border-top-color: #6c757d;">
+                    <h2><i class="fas fa-bullhorn"></i> Activity & Announcements</h2>
+                    <div class="activity-feed">
+                        <div class="activity-item">
+                            **5 students submitted Lab 3 Report.**
+                            <span class="time"><i class="fas fa-clock"></i> 2 minutes ago</span>
+                        </div>
+                        <div class="activity-item">
+                            **📢 Internal assessment scheduled for next week.**
+                            <span class="time" style="color: var(--primary-color);"><i class="fas fa-user-cog"></i> Posted: 5 Nov 2025 | Target: 3rd Year CSE</span>
+                        </div>
+                        <div class="activity-item">
+                            **2 new messages received** from CS301 students.
+                            <span class="time"><i class="fas fa-clock"></i> 1 hour ago</span>
+                        </div>
+                        <div class="activity-item">
+                            Gradebook updated for CS405.
+                            <span class="time"><i class="fas fa-clock"></i> Yesterday</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-action" style="margin-top: 15px; background-color: var(--accent-color-2);"><i class="fas fa-plus"></i> Post Announcement</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="margin-top: 30px; padding: 15px 0; text-align: center; background-color: var(--background-light); box-shadow: 0 -2px 5px rgba(0,0,0,0.05); margin-left: 280px;">
+        <p style="font-size: 14px; color: #6c757d;">© 2025 Campus Connect | Faculty Dashboard | Version 1.0</p>
+    </footer>
+
+    <script>
+        // --- 1. Dynamic User Data Loading (Copied from login/student dashboard) ---
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Prof. Devesh Tyagi"; // Default faculty name
+            const userID = localStorage.getItem('userID') || "F-401";
+            
+            // 1. Update the Header Profile Link
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) {
+                profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`;
+            }
+
+            // 2. Update the Main Welcome Message
+            const welcomeMessage = document.getElementById('welcome-message');
+            if (welcomeMessage) {
+                const title = userName.split(' ')[0].startsWith('Dr.') || userName.split(' ')[0].startsWith('Prof.') ? userName.split(' ')[0] : `Prof. ${userName.split(' ')[0]}`;
+                welcomeMessage.textContent = `👋 Welcome, ${title} ${userName.split(' ').pop()}.`;
+            }
+        }
+        
+        // --- 2. Chart Simulation ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user data on DOMContentLoaded if body onload didn't fire immediately
+            if (!document.getElementById('welcome-message').textContent.includes('Welcome')) {
+                loadUserData();
+            }
+
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['CS301', 'CS405', 'GE102'],
+                    datasets: [{
+                        label: 'Average Marks (%)',
+                        data: [78, 85, 92],
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.7)', // Blue
+                            'rgba(40, 167, 69, 0.7)', // Green
+                            'rgba(255, 107, 53, 0.7)' // Orange
+                        ],
+                        borderColor: [
+                            'var(--primary-color)',
+                            'var(--accent-color-2)',
+                            'var(--accent-color-1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+
+
+        // --- 3. Standard UI Functions ---
+        
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Add active class to clicked sidebar link
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+                document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
