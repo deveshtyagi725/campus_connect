@@ -115,14 +115,15 @@
         let facultyFinalGrades = JSON.parse(localStorage.getItem('facultyFinalGrades')) || {}; // New key for final grades/CPI
 
 
-        // --- GRADE CONVERSION HELPERS ---
+        // --- GRADE CONVERSION HELPERS (MODIFIED for 10-point CPI) ---
         
         function getLetterGrade(totalPercentage) {
-            if (totalPercentage >= 90) return { grade: 'A+', class: 'grade-A', gpa: 4.0 };
-            if (totalPercentage >= 80) return { grade: 'A', class: 'grade-A', gpa: 4.0 };
-            if (totalPercentage >= 70) return { grade: 'B+', class: 'grade-B', gpa: 3.3 };
-            if (totalPercentage >= 60) return { grade: 'B', class: 'grade-B', gpa: 3.0 };
-            if (totalPercentage >= 50) return { grade: 'C', class: 'grade-C', gpa: 2.0 };
+            // 10-Point CPI Scale Mapping
+            if (totalPercentage >= 90) return { grade: 'A+', class: 'grade-A', gpa: 10.0 };
+            if (totalPercentage >= 80) return { grade: 'A', class: 'grade-A', gpa: 9.0 };
+            if (totalPercentage >= 70) return { grade: 'B+', class: 'grade-B', gpa: 8.0 };
+            if (totalPercentage >= 60) return { grade: 'B', class: 'grade-B', gpa: 7.0 };
+            if (totalPercentage >= 50) return { grade: 'C', class: 'grade-C', gpa: 6.0 };
             return { grade: 'F', class: 'grade-F', gpa: 0.0 };
         }
 
@@ -204,7 +205,7 @@
         function updateSingleGrade(row) {
             const input = row.querySelector('.mark-input');
             const gradeCell = row.querySelector('.calculated-grade');
-            const markEarned = parseFloat(input.value) || 0;
+            let markEarned = parseFloat(input.value) || 0;
             const maxMarks = parseFloat(input.dataset.courseMax);
 
             if (markEarned > maxMarks) {
@@ -242,6 +243,7 @@
                 }
             });
 
+            // The average of the 10-point grade points yields the 10-point CPI
             const finalCPI = (courseCount > 0) ? (totalGPA / courseCount).toFixed(2) : '0.00';
             document.getElementById('final-cpi-display').textContent = finalCPI;
         }

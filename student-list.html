@@ -144,9 +144,22 @@
     <script>
         // Load data arrays from localStorage
         let students = JSON.parse(localStorage.getItem('facultyStudentRoster')) || [];
-        const facultyCourses = JSON.parse(localStorage.getItem('facultyCourses')) || [];
+        // Original dynamic courses (may contain specific subjects taught by the faculty)
+        const dynamicFacultyCourses = JSON.parse(localStorage.getItem('facultyCourses')) || [];
 
-        // --- DYNAMIC COURSE POPULATION ---
+        // --- MODIFIED: STATIC PERMANENT COURSE DATA ---
+        const permanentCourses = [
+            { code: 'BTECH-CSE', name: 'B.Tech - Computer Science Engineering' },
+            { code: 'BTECH-MECH', name: 'B.Tech - Mechanical Engineering' },
+            { code: 'BTECH-ELEC', name: 'B.Tech - Electrical Engineering' },
+            { code: 'BTECH-CIVIL', name: 'B.Tech - Civil Engineering' },
+            { code: 'BPHARMA', name: 'Bachelor of Pharmacy (B.Pharma)' },
+            { code: 'BBA', name: 'Bachelor of Business Administration (BBA)' }
+        ];
+        // --- END MODIFIED COURSE DATA ---
+
+
+        // --- DYNAMIC COURSE POPULATION (MODIFIED) ---
         function populateCourseOptions() {
             const studentCourseSelect = document.getElementById('student-course');
             const filterCourseSelect = document.getElementById('filter-course');
@@ -155,8 +168,19 @@
             studentCourseSelect.innerHTML = '<option value="">Select Course</option>';
             filterCourseSelect.innerHTML = '<option value="">Filter by Course (All)</option>';
 
-            // Use the courses actually created by the faculty
-            const optionsHTML = facultyCourses
+            // Combine static courses and dynamic courses, ensuring no duplicate codes
+            const allCoursesMap = new Map();
+            
+            // Add permanent courses first
+            permanentCourses.forEach(course => allCoursesMap.set(course.code, course));
+            
+            // Add dynamic courses, prioritizing the dynamic name if the code exists
+            dynamicFacultyCourses.forEach(course => allCoursesMap.set(course.code, course));
+
+            // Convert map values back to an array and sort by course code
+            const finalCourseList = Array.from(allCoursesMap.values()).sort((a, b) => a.code.localeCompare(b.code));
+
+            const optionsHTML = finalCourseList
                 .map(course => `<option value="${course.code}">${course.code} - ${course.name}</option>`)
                 .join('');
 
@@ -177,6 +201,11 @@
             tableBody.innerHTML = '';
             
             let filteredStudents = students;
+
+            // Gather all possible courses for display lookup
+            const allCourses = new Map();
+            permanentCourses.forEach(c => allCourses.set(c.code, c.name));
+            dynamicFacultyCourses.forEach(c => allCourses.set(c.code, c.name));
 
             if (applyFilter) {
                 // Apply search filter
@@ -199,8 +228,8 @@
 
             filteredStudents.forEach(student => {
                 const row = tableBody.insertRow();
-                // Get the display name for the course
-                const courseDisplayName = facultyCourses.find(c => c.code === student.course)?.name || student.course;
+                // Get the display name for the course, using the combined Map
+                const courseDisplayName = allCourses.get(student.course) || student.course;
 
                 row.innerHTML = `
                     <td data-label="Student ID">${student.id}</td>
