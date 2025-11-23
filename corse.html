@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty - Course Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="student-dashboard.css"> 
+    
+    <style>
+        /* CSS Variables (Assuming defined in style.css) */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-dark: #0056b3;
+            --accent-color-1: #ff6b35; /* Orange/Highlight */
+            --accent-color-2: #28a745; /* Green */
+            --text-color-dark: #212529;
+            --background-light: #ffffff;
+            --background-mid: #f4f7fa;
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+            --delete-color: #dc3545; /* Red */
+        }
+        
+        /* --- CORE LAYOUT ADJUSTMENT (Full Width & Padding) --- */
+        .main-content { 
+            margin-left: 0; 
+            margin-top: 66px; 
+            padding: 30px; 
+        }
+        footer { 
+            margin-left: 0 !important; 
+            padding: 20px 0;
+        }
+        
+        /* --- HEADER NAVIGATION OPTIMIZATION --- */
+        header {
+            background-color: var(--background-light);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px; /* Optimized Header Padding */
+        }
+        
+        /* LOGO HOVER */
+        .logo { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: var(--primary-color); 
+            transition: color 0.3s ease, transform 0.3s ease; 
+            margin-right: 30px;
+        }
+        .logo:hover {
+            color: var(--accent-color-1); /* ORANGE HOVER */
+            transform: scale(1.05); 
+        }
+
+        /* USER MENU HOVER & SPACING */
+        .user-menu { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; /* Space between profile link and button */
+        }
+        .user-menu a.profile-link { 
+            font-weight: 600; 
+            color: var(--text-color-dark); 
+            transition: color 0.3s ease; 
+            padding: 5px 0;
+        }
+        .user-menu a.profile-link:hover { 
+            color: var(--accent-color-1); /* ORANGE HOVER */
+        }
+
+        /* Dashboard Button Hover (Retained) */
+        .header-home-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .header-home-btn:hover {
+            background-color: var(--accent-color-1);
+            color: white;
+            border-color: var(--accent-color-1);
+        }
+
+        /* --- CONTENT & TABLE STYLES --- */
+
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
+        
+        .form-card { background-color: var(--background-light); padding: 30px; border-radius: 12px; box-shadow: var(--shadow-lift); margin-bottom: 40px; border-left: 5px solid var(--accent-color-2); }
+        .form-card h2 { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .input-grid input, .input-grid select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; font-family: 'Poppins', sans-serif; }
+        
+        .content-card { background-color: var(--background-light); border-radius: 12px; box-shadow: var(--shadow-lift); padding: 20px 30px 30px 30px; }
+        
+        /* TABLE STYLES */
+        .course-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .course-table th, .course-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; transition: background-color 0.3s ease; }
+        .course-table th { background-color: var(--background-mid); color: var(--text-color-dark); font-weight: 600; text-transform: uppercase; }
+        
+        /* --- NEW: TABLE ROW AND BUTTON HOVERS --- */
+        .course-table tbody tr:hover {
+            background-color: #ffe0c2; /* Light Orange/Peach tint on hover */
+            cursor: pointer;
+        }
+
+        .btn-action { 
+            padding: 8px 12px; 
+            font-size: 13px; 
+            margin: 3px; 
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        /* Edit Button Hover */
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Remove Button Hover (Using destructive red, hovering to orange) */
+        .btn-remove {
+            background-color: var(--delete-color); 
+            color: white;
+        }
+        .btn-remove:hover {
+            background-color: var(--accent-color-1); /* Orange for clear feedback */
+            box-shadow: 0 4px 8px rgba(255, 107, 53, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .course-table thead { display: none; }
+            .course-table, .course-table tbody, .course-table tr, .course-table td { display: block; width: 100%; }
+            .course-table td { text-align: right; padding-left: 50%; position: relative; }
+            .course-table td::before { content: attr(data-label); position: absolute; left: 0; width: 50%; padding-left: 15px; font-weight: 600; text-align: left; color: var(--primary-color); }
+        }
+    </style>
+</head>
+<body onload="loadUserData(); renderCourses()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <button class="header-home-btn" onclick="window.location.href='faculty-dashboard.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>Course Management Hub</h1>
+            <p>Easily add new courses and manage the status and details of your current offerings.</p>
+        </div>
+
+        <div class="form-card">
+            <h2 id="form-heading"><i class="fas fa-plus-circle"></i> Add New Course</h2>
+            <form id="course-form" onsubmit="handleCourseSubmit(event)">
+                <input type="hidden" id="course-id">
+                <div class="input-grid">
+                    <input type="text" id="course-name" placeholder="Course Name (e.g., Data Structures)" required>
+                    <input type="text" id="course-code" placeholder="Course Code (e.g., CS301)" required>
+                    <select id="semester" required>
+                        <option value="">Select Semester</option>
+                        <option value="4th Semester">4th Semester</option>
+                        <option value="6th Semester">6th Semester</option>
+                        <option value="8th Semester">8th Semester</option>
+                    </select>
+                    <input type="number" id="duration" placeholder="Duration (Weeks)" min="1" max="15" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submit-button" style="background-color: var(--accent-color-2);">
+                    <i class="fas fa-save"></i> Save New Course
+                </button>
+                <button type="button" class="btn btn-action btn-secondary" id="cancel-button" onclick="resetForm()" style="background-color: #6c757d; display: none;">
+                    <i class="fas fa-times"></i> Cancel Edit
+                </button>
+            </form>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-tasks"></i> Current Active Courses</h2>
+            <table class="course-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Semester</th>
+                        <th>Duration</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="course-list">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer style="margin-top: 30px; padding: 20px 0; text-align: center; background-color: var(--background-light); box-shadow: 0 -2px 5px rgba(0,0,0,0.05); margin-left: 0;">
+        <p style="font-size: 14px; color: #6c757d;">© 2025 Campus Connect | Faculty Dashboard | Course Management</p>
+    </footer>
+
+    <script>
+        // Array to simulate database storage in the browser
+        let courses = JSON.parse(localStorage.getItem('facultyCourses')) || [
+            { id: 1, code: 'CS301', name: 'Data Structures', semester: '4th Semester', duration: 12 },
+            { id: 2, code: 'CS405', name: 'Advanced Algorithms', semester: '6th Semester', duration: 15 },
+        ];
+        let nextCourseId = courses.length > 0 ? Math.max(...courses.map(c => c.id)) + 1 : 1;
+
+        // --- CORE FUNCTIONALITY (Remains Unchanged) ---
+
+        function renderCourses() {
+            const tableBody = document.getElementById('course-list');
+            tableBody.innerHTML = '';
+            
+            if (courses.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6c757d; padding: 20px;">No courses currently managed. Add one above!</td></tr>';
+                return;
+            }
+
+            courses.forEach(course => {
+                const row = tableBody.insertRow();
+                // Add click handler to entire row for visual feedback
+                row.onclick = () => editCourse(course.id);
+                
+                row.innerHTML = `
+                    <td data-label="Code">${course.code}</td>
+                    <td data-label="Name">${course.name}</td>
+                    <td data-label="Semester">${course.semester}</td>
+                    <td data-label="Duration">${course.duration} Weeks</td>
+                    <td data-label="Actions">
+                        <button class="btn btn-action btn-primary" onclick="editCourse(${course.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-action btn-remove" onclick="event.stopPropagation(); deleteCourse(${course.id})">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </td>
+                `;
+            });
+            localStorage.setItem('facultyCourses', JSON.stringify(courses));
+        }
+
+        function handleCourseSubmit(event) {
+            event.preventDefault();
+            const id = document.getElementById('course-id').value;
+            const name = document.getElementById('course-name').value;
+            const code = document.getElementById('course-code').value;
+            const semester = document.getElementById('semester').value;
+            const duration = parseInt(document.getElementById('duration').value);
+
+            const courseData = { code, name, semester, duration };
+
+            if (id) {
+                const index = courses.findIndex(c => c.id === parseInt(id));
+                if (index !== -1) {
+                    courses[index] = { id: parseInt(id), ...courseData };
+                    alert(`Course ${code} updated successfully!`);
+                }
+            } else {
+                const newCourse = { id: nextCourseId++, ...courseData };
+                courses.push(newCourse);
+                alert(`New Course ${code} added successfully!`);
+            }
+
+            resetForm();
+            renderCourses();
+        }
+
+        function deleteCourse(id) {
+            if (confirm('Are you sure you want to remove this course?')) {
+                courses = courses.filter(course => course.id !== id);
+                renderCourses();
+                alert('Course removed.');
+            }
+        }
+
+        function editCourse(id) {
+            const course = courses.find(c => c.id === id);
+            if (course) {
+                document.getElementById('course-id').value = course.id;
+                document.getElementById('course-name').value = course.name;
+                document.getElementById('course-code').value = course.code;
+                document.getElementById('semester').value = course.semester;
+                document.getElementById('duration').value = course.duration;
+
+                document.getElementById('form-heading').innerHTML = '<i class="fas fa-edit"></i> Edit Course: ' + course.code;
+                document.getElementById('submit-button').innerHTML = '<i class="fas fa-sync-alt"></i> Update Course';
+                document.getElementById('submit-button').style.backgroundColor = 'var(--primary-color)';
+                document.getElementById('cancel-button').style.display = 'inline-block';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('course-form').reset();
+            document.getElementById('course-id').value = '';
+            document.getElementById('form-heading').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Course';
+            document.getElementById('submit-button').innerHTML = '<i class="fas fa-save"></i> Save New Course';
+            document.getElementById('submit-button').style.backgroundColor = 'var(--accent-color-2)';
+            document.getElementById('cancel-button').style.display = 'none';
+        }
+
+        // --- UI & DATA LOADING (Consistency functions) ---
+
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Prof. Jane Smith"; 
+            const userID = localStorage.getItem('userID') || "F-101";
+            
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) {
+                profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`;
+            }
+        }
+    </script>
+</body>
+</html>

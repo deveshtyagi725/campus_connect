@@ -6,7 +6,211 @@
     <title>Campus Connect - Next-Gen Landing Page</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    
+    <style>
+        /* CSS Variables (Optimized for reuse) */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-dark: #0056b3;
+            --accent-color-1: #ff6b35; /* Orange/Highlight */
+            --accent-color-2: #28a745; /* Green */
+            --text-color-dark: #212529;
+            --text-color-light: #f8f9fa;
+            --background-light: #ffffff;
+            --background-mid: #f4f7fa;
+            --shadow-light: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            color: var(--text-color-dark);
+            background-color: var(--background-mid);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        section {
+            padding: 100px 0; 
+        }
+
+        /* Button Polish */
+        button, .btn {
+            cursor: pointer;
+            border: none;
+            border-radius: 50px; 
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-light);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: transparent; 
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-2px);
+        }
+        .highlight {
+            background-color: var(--accent-color-1);
+            color: white;
+            border: 2px solid var(--accent-color-1);
+        }
+        .highlight:hover {
+            background-color: #e55a2b;
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-2px);
+        }
+
+        /* Header/Navbar */
+        header {
+            background-color: var(--background-light);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: sticky; 
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0; 
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary-color);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+            color: var(--accent-color-1);
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+        .nav-links li {
+            margin-left: 35px;
+        }
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 200px 0 150px; 
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+        .hero h1 {
+            font-size: 60px;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+        
+        /* Features Section */
+        .features {
+            background-color: var(--background-light);
+        }
+        .features h2 {
+            font-size: 45px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--text-color-dark);
+            position: relative;
+        }
+
+        /* Contact Section Enhancement */
+        .contact {
+            background-color: var(--background-mid);
+        }
+        .contact h2 {
+            font-size: 45px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text-color-dark);
+        }
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: var(--background-light);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-lift);
+        }
+        .contact-form input, .contact-form textarea {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+            .nav-links {
+                display: none;
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,10 +225,10 @@
                     <li><a href="#about">ℹ️ About</a></li>
                     <li><a href="#contact">📞 Contact Us</a></li>
                 </ul>
-               <div class="nav-buttons">
-    <a href="login.html" class="btn highlight">🔑 Login</a>
-    <a href="register.html" class="btn btn-secondary">✍️ Register</a>
-</div>
+                <div class="nav-buttons">
+                    <a href="login.html" class="btn highlight">🔑 Login</a>
+                    <a href="register.html" class="btn btn-secondary">✍️ Register</a>
+                </div>
                 <div class="menu-toggle" onclick="toggleMenu()">
                     <i class="fas fa-bars"></i>
                 </div>
@@ -37,9 +241,9 @@
             <h1>Your Academic Life, Simplified.</h1>
             <p>A unified, intelligent platform connecting students, faculty, and administration for seamless learning and collaboration.</p>
             <div class="hero-buttons">
-    <button class="btn btn-primary" onclick="window.location.href='register.html'">🔐 Get Started for Students</button>
-    <button class="btn btn-secondary" onclick="window.location.href='register.html'">🧑‍🏫 Portal for Faculty & Staff</button>
-</div>
+                <button class="btn btn-primary" onclick="window.location.href='register.html'">🔐 Get Started for Students</button>
+                <button class="btn btn-secondary" onclick="window.location.href='register.html'">🧑‍🏫 Portal for Faculty & Staff</button>
+            </div>
         </div>
     </section>
 
@@ -118,15 +322,25 @@
     <section id="contact" class="contact">
         <div class="container">
             <h2>Ready to Connect? Get in Touch!</h2>
-            <form class="contact-form" onsubmit="handleSubmit(event)">
-                <p class="contact-info" style="text-align: center; color: var(--primary-color); font-weight: 600;">
-                    <i class="fas fa-envelope"></i> support@campusconnect.com | 
-                    <i class="fas fa-phone-alt"></i> +91-9876543210
-                </p>
-                <input type="text" placeholder="Your Full Name" required>
-                <input type="email" placeholder="Your Professional Email" required>
-                <textarea placeholder="Your Message/Inquiry..." required></textarea>
-                <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Send Inquiry</button>
+            
+            <p class="contact-info" style="text-align: center; color: var(--primary-color); font-weight: 600; margin-bottom: 25px;">
+                <a href="mailto:tyagidevesh809@gmail.com" style="margin-right: 20px; color: var(--primary-color);">
+                    <i class="fas fa-envelope"></i> tyagidevesh809@gmail.com
+                </a>
+                | 
+                <a href="tel:+917983025099" style="margin-left: 20px; color: var(--primary-color);">
+                    <i class="fas fa-phone-alt"></i> +91-7983025099
+                </a>
+            </p>
+
+            <form class="contact-form" id="email-inquiry-form" onsubmit="sendInquiryEmail(event)">
+                <input type="text" id="contact-name" placeholder="Your Full Name" required>
+                <input type="email" id="contact-email" placeholder="Your Professional Email" required>
+                <textarea id="contact-message" placeholder="Your Message/Inquiry..." required></textarea>
+                
+                <button type="submit" class="btn highlight" style="align-self: flex-start; background-color: var(--accent-color-1);">
+                    <i class="fas fa-paper-plane"></i> Send Inquiry Email
+                </button>
             </form>
         </div>
     </section>
@@ -144,6 +358,59 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // --- MAILTO INTEGRATION LOGIC ---
+        function sendInquiryEmail(event) {
+            event.preventDefault(); // Stop standard form submission
+            
+            const recipientEmail = 'tyagidevesh809@gmail.com';
+            const name = document.getElementById('contact-name').value;
+            const senderEmail = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+
+            // Encode the subject and body content for the mailto link
+            const subject = encodeURIComponent(`New Inquiry from Website: ${name}`);
+            const body = encodeURIComponent(
+                `Name: ${name}\n` +
+                `Email: ${senderEmail}\n` +
+                `---\n` +
+                `Message:\n${message}`
+            );
+
+            // Construct the mailto link
+            const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+            // Open the user's email client
+            window.location.href = mailtoLink;
+
+            // Provide immediate feedback and reset the form
+            setTimeout(() => {
+                alert("Your inquiry has been prepared! Please click 'Send' in your email application.");
+                document.getElementById('email-inquiry-form').reset();
+            }, 100);
+        }
+
+        // --- EXISTING JAVASCRIPT FUNCTIONS ---
+        
+        // Toggle mobile menu
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.nav-links a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>

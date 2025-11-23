@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - Weekly Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="digital.css"> 
+
+    <style>
+        /* CSS Variables (from digital.css/style.css) */
+        :root {
+            --primary-color: #007bff; 
+            --accent-color-1: #ff6b35; 
+            --accent-color-2: #28a745;
+            --background-light: #ffffff; 
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* --- CORE LAYOUT ADJUSTMENT --- */
+        .main-content { margin-left: 280px; margin-top: 66px; padding: 30px; }
+        footer { margin-left: 280px !important; padding: 20px 0; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
+
+        /* Schedule List Styles */
+        .event-list { list-style: none; padding: 0; }
+        .event-item {
+            background-color: var(--background-light);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid; /* Dynamic color based on type */
+            border-radius: 8px;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .event-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+        .event-item h3 { color: var(--primary-color); margin-bottom: 5px; font-size: 20px; }
+        .event-item p { font-size: 14px; color: #6c757d; }
+        .event-item .time { font-weight: 600; color: var(--accent-color-1); }
+        
+        /* Dynamic Border Colors */
+        .type-Lecture { border-left-color: var(--primary-color); }
+        .type-Meeting { border-left-color: var(--accent-color-1); }
+        .type-Exam { border-left-color: var(--delete-color, #dc3545); }
+        .type-Other { border-left-color: #6c757d; }
+
+
+        /* Responsive */
+        @media (max-width: 992px) { 
+            .main-content { margin-left: 0; }
+            footer { margin-left: 0 !important; }
+        }
+    </style>
+</head>
+<body onload="loadUserData(); renderStudentSchedule()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <a href="login.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <h3><i class="fas fa-th-large"></i> Student Portal</h3>
+        <ul>
+            <li><a href="digital.html"><i class="fas fa-home"></i> Overview</a></li>
+            <li><a href="lecture-materials.html"><i class="fas fa-book-open"></i> Lecture Materials</a></li>
+            <li><a href="assignments-student.html"><i class="fas fa-upload"></i> Assignments & Submissions</a></li>
+            <li><a href="grades.html"><i class="fas fa-chart-line"></i> Grades & Performance</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Campus Announcements</a></li>
+            <li><a href="communication-hub.html"><i class="fas fa-comments"></i> Digital Comms Hub</a></li>
+            <li><a href="ask-doubts.html"><i class="fas fa-question-circle"></i> Ask Doubts (Q&A)</a></li>
+            <li class="current-page"><a href="student-schedule.html" class="active"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>My Weekly Schedule</h1>
+            <p>Your current list of classes, exams, and official meetings.</p>
+        </div>
+
+        <div class="schedule-content">
+            <h2><i class="fas fa-calendar-alt"></i> Upcoming Events</h2>
+            <ul class="event-list" id="event-list">
+                </ul>
+        </div>
+    </main>
+
+    <footer style="background-color: var(--background-light); box-shadow: 0 -2px 5px rgba(0,0,0,0.05); margin-left: 280px; text-align: center; padding: 20px 0;">
+        <p style="font-size: 14px; color: #6c757d;">© 2025 Campus Connect | Student Portal | Schedule</p>
+    </footer>
+
+    <script>
+        // Helper function to format date/time nicely
+        function formatDateTime(dtString) {
+            const date = new Date(dtString);
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            return `${dateStr}, ${timeStr}`;
+        }
+        
+        function getEventIcon(type) {
+             if (type === 'Lecture') return 'fas fa-chalkboard-teacher';
+             if (type === 'Meeting') return 'fas fa-handshake';
+             if (type === 'Exam') return 'fas fa-graduation-cap';
+             return 'fas fa-calendar-day';
+        }
+
+        function renderStudentSchedule() {
+            // Retrieve events saved by the faculty
+            const events = JSON.parse(localStorage.getItem('facultySchedule')) || [];
+            const list = document.getElementById('event-list');
+            list.innerHTML = '';
+            
+            // Sort events by date ascending
+            events.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+            if (events.length === 0) {
+                list.innerHTML = '<li class="event-item" style="text-align: center; color: #6c757d;">No scheduled events found. Check back later!</li>';
+                return;
+            }
+
+            events.forEach(event => {
+                const eventTypeClass = `type-${event.type}`;
+                const eventIcon = getEventIcon(event.type);
+
+                const item = document.createElement('li');
+                item.className = `event-item ${eventTypeClass}`;
+                
+                item.innerHTML = `
+                    <h3><i class="${eventIcon}"></i> ${event.title}</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                    <p class="time"><i class="fas fa-clock"></i> ${formatDateTime(event.datetime)}</p>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // --- UI & DATA LOADING (Consistency functions) ---
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Alex R. Sharma";
+            const userID = localStorage.getItem('userID') || "S-56789";
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+        }
+
+        function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('active'); }
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+                document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

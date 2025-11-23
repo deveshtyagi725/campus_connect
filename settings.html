@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="digital.css"> 
+
+    <style>
+        /* CSS Variables (from style.css/digital.css for consistency) */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --accent-color-1: #ff6b35; /* Orange */
+            --accent-color-2: #28a745; /* Green */
+            --text-color-dark: #212529; /* Dark Gray */
+            --background-light: #ffffff; /* White */
+            --background-mid: #f4f7fa; /* Light Gray */
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15); /* Lifted Shadow */
+        }
+
+        /* --- Layout Adjustments for Main Content --- */
+        /* These ensure the content appears correctly next to the sidebar and below the header */
+        .main-content { 
+            margin-left: 280px; /* Space for the fixed sidebar */
+            margin-top: 66px; /* Space for the fixed header */
+            padding: 30px; 
+        }
+        footer { 
+            margin-left: 280px !important; /* Ensure footer aligns with main content */
+            padding: 20px 0; 
+            text-align: center;
+            color: #6c757d;
+            background-color: var(--background-light);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        .dashboard-header h1 {
+            color: var(--text-color-dark);
+            font-weight: 800;
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+        .dashboard-header p {
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        /* --- Settings Page Specific Styles --- */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns for settings cards */
+            gap: 30px; /* Space between the cards */
+        }
+
+        .settings-card {
+            background-color: var(--background-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lift);
+            margin-bottom: 30px; /* Space below the cards */
+            border-left: 5px solid var(--primary-color); /* Emphasize with primary color */
+        }
+        /* Style for the second card with a different accent */
+        .settings-card.secondary-card {
+            border-left: 5px solid var(--accent-color-1); 
+        }
+
+        .settings-card h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .settings-card.secondary-card h2 {
+            color: var(--accent-color-1); /* Match header color to border */
+        }
+
+
+        /* Form element styling */
+        .profile-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .profile-form input, 
+        .profile-form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .profile-form input:focus,
+        .profile-form select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        .profile-form input[disabled] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+            color: #6c757d;
+        }
+
+        /* Styling for individual setting options (e.g., Change Password, Notifications) */
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px dashed #eee; /* Subtle separator */
+        }
+        .setting-option:last-child {
+            border-bottom: none; /* No border for the last item */
+        }
+        .setting-option label {
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .setting-option input[type="checkbox"] {
+            transform: scale(1.3); /* Make checkbox slightly larger */
+            cursor: pointer;
+        }
+        .setting-option a {
+            color: var(--primary-color);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .setting-option a:hover {
+            text-decoration: underline;
+            color: var(--accent-color-1);
+        }
+        .btn-action { /* Specific style for action buttons within settings */
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+
+        /* --- Header Button (Dashboard Corner Button - from faculty settings) --- */
+        .header-home-btn { 
+            background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); 
+            padding: 8px 15px; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; 
+        }
+        .header-home-btn:hover { 
+            background-color: var(--accent-color-1); color: white; border-color: var(--accent-color-1); 
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 992px) { 
+            .settings-grid { 
+                grid-template-columns: 1fr; /* Stack cards on smaller screens */
+            }
+            .main-content { 
+                margin-left: 0; /* Remove sidebar margin when sidebar is hidden */
+            } 
+            footer { 
+                margin-left: 0 !important; 
+            }
+            .sidebar { /* Hide sidebar by default on smaller screens */
+                transform: translateX(-100%); 
+            }
+            .sidebar.active { /* Show sidebar when active */
+                transform: translateX(0); 
+            }
+            /* Adjust header to prevent overlap with toggled sidebar */
+            header { padding-right: 20px; }
+            nav .user-menu { display: none; /* Hide user menu items on small screens, can be shown in sidebar if needed */ }
+            nav .menu-toggle { display: block; /* Show menu toggle button */ }
+        }
+    </style>
+</head>
+<body onload="loadUserData();">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <a href="login.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <h3><i class="fas fa-th-large"></i> Student Portal</h3>
+        <ul>
+            <li><a href="digital.html"><i class="fas fa-home"></i> Overview</a></li>
+            <li><a href="lecture-materials.html"><i class="fas fa-book-open"></i> Lecture Materials</a></li>
+            <li><a href="assignments-student.html"><i class="fas fa-upload"></i> Assignments & Submissions</a></li>
+            <li><a href="grades.html"><i class="fas fa-chart-line"></i> Grades & Performance</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Campus Announcements</a></li>
+            <li><a href="communication-hub.html"><i class="fas fa-comments"></i> Digital Comms Hub</a></li>
+            <li><a href="ask-doubts.html"><i class="fas fa-question-circle"></i> Ask Doubts (Q&A)</a></li>
+            <li class="current-page"><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-cog"></i> Account Settings</h1>
+            <p>Update your profile, change your password, and manage application preferences.</p>
+        </div>
+
+        <div class="settings-grid">
+            <div class="settings-card">
+                <h2>Profile Information</h2>
+                <form class="profile-form" onsubmit="saveProfile(event)">
+                    <label for="profile-name">Full Name:</label>
+                    <input type="text" id="profile-name" placeholder="Full Name" required>
+                    
+                    <label for="profile-email">Email:</label>
+                    <input type="email" id="profile-email" placeholder="Email" required>
+                    
+                    <label for="profile-major">Major:</label>
+                    <input type="text" id="profile-major" value="Computer Science" disabled placeholder="Major">
+                    
+                    <label for="profile-id">Student ID:</label>
+                    <input type="text" id="profile-id" disabled placeholder="Student ID">
+                    
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+                </form>
+            </div>
+
+            <div class="settings-card secondary-card">
+                <h2>Security & Notifications</h2>
+                
+                <div class="setting-option">
+                    <label>Change Password</label>
+                    <button class="btn btn-action btn-primary" onclick="alert('Simulating Password Change Form...')" style="background-color: var(--accent-color-1);">
+                        <i class="fas fa-lock"></i> Update
+                    </button>
+                </div>
+                
+                <div class="setting-option">
+                    <label for="email-notifications">Email Notifications</label>
+                    <input type="checkbox" id="email-notifications" checked>
+                </div>
+                
+                <div class="setting-option">
+                    <label>Privacy Policy</label>
+                    <a href="#">Review Document</a>
+                </div>
+
+                <div class="setting-option">
+                    <label for="theme-select">Application Theme</label>
+                    <select id="theme-select">
+                        <option value="light">Light (Default)</option>
+                        <option value="dark">Dark Mode</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Student Portal | Settings</p>
+    </footer>
+
+    <script>
+        // Function to load user data from localStorage and populate the form/header
+        function loadUserData() {
+            // Retrieve persistent data set during registration/login
+            const userName = localStorage.getItem('userName') || "Alex R. Sharma";
+            const userEmail = localStorage.getItem('userEmail') || "alex.sharma@uni.edu";
+            const userID = localStorage.getItem('registeredUserID') || "S-56789"; // Use registeredUserID from login
+
+            // Update header profile link
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { 
+                profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; 
+            }
+
+            // Populate form fields for editing
+            document.getElementById('profile-name').value = userName;
+            document.getElementById('profile-email').value = userEmail;
+            document.getElementById('profile-id').value = userID;
+            // Major is static for now, but could also be loaded from localStorage if stored
+        }
+
+        // Function to save profile updates to localStorage
+        function saveProfile(event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const newName = document.getElementById('profile-name').value;
+            const newEmail = document.getElementById('profile-email').value;
+            
+            // Save updates back to localStorage (Simulating persistent change)
+            localStorage.setItem('userName', newName);
+            localStorage.setItem('userEmail', newEmail);
+            
+            alert(`Profile updated successfully! Welcome, ${newName}.`);
+            loadUserData(); // Reload header with new name immediately
+        }
+        
+        // Function to toggle the sidebar visibility (for mobile responsiveness)
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebar'); 
+            sidebar.classList.toggle('active'); 
+        }
+
+        // Optional: Close sidebar when a link is clicked on mobile
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) { // Only on mobile/tablet sizes
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+                // Optional: You might want to remove 'active' from all sidebar links and add to the clicked one
+                document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active'); // Mark the clicked link as active
+            });
+        });
+    </script>
+</body>
+</html>

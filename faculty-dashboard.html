@@ -26,147 +26,61 @@
 
         /* --- Layout Consistency --- */
         body { font-family: 'Poppins', sans-serif; background-color: var(--background-mid); }
-        .btn-action { /* Custom button for smaller actions */
-            padding: 8px 15px;
-            font-size: 13px;
-            border-radius: 5px;
-            text-transform: capitalize;
-        }
+        .btn-action { padding: 8px 15px; font-size: 13px; border-radius: 5px; text-transform: capitalize; }
 
-        /* Header Styles (Copied from Student Dashboard for consistency) */
+        /* Header Styles */
         header { background-color: var(--background-light); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); }
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-menu a.profile-link { font-weight: 600; color: var(--text-color-dark); }
-        .menu-toggle { display: none; font-size: 28px; cursor: pointer; color: var(--primary-color); }
-        .btn-secondary { background-color: var(--accent-color-1); color: white; box-shadow: none; }
-        .btn-secondary:hover { background-color: #e55a2b; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); transition: color 0.3s ease, transform 0.3s ease; }
+        .logo:hover { color: var(--accent-color-1); transform: scale(1.05); } 
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+        .user-menu a.profile-link { font-weight: 600; color: var(--text-color-dark); transition: color 0.3s ease; padding: 5px 0;}
+        .user-menu a.profile-link:hover { color: var(--accent-color-1); }
 
-        /* Sidebar Styles (Copied from Student Dashboard) */
+        /* Sidebar Styles */
         .sidebar { width: 280px; background-color: var(--background-light); box-shadow: 4px 0 10px rgba(0,0,0,0.1); position: fixed; height: 100vh; top: 66px; left: 0; padding: 30px 20px; overflow-y: auto; transition: transform 0.3s ease; }
         .sidebar h3 { margin-bottom: 25px; color: var(--primary-color); font-weight: 700; font-size: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .sidebar ul { list-style: none; }
         .sidebar a { display: flex; align-items: center; padding: 12px 15px; border-radius: 8px; transition: background-color 0.3s ease, color 0.3s ease; font-weight: 500; gap: 15px; }
-        .sidebar a:hover { background-color: var(--background-mid); color: var(--primary-color); }
         .sidebar a.active { background-color: var(--primary-color); color: white; font-weight: 600; box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3); }
 
         /* Main Content */
         .main-content { margin-left: 280px; margin-top: 66px; padding: 30px; }
         .dashboard-header { margin-bottom: 40px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
         .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
-        .dashboard-header p { font-size: 18px; color: #6c757d; }
         
-        /* Summary Grid */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        .summary-card {
-            background-color: var(--background-light);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-light);
-            transition: transform 0.3s ease;
-            text-align: center;
-        }
-        .summary-card:hover { transform: translateY(-5px); }
-        .summary-card i {
-            font-size: 36px;
-            color: var(--accent-color-1);
-            margin-bottom: 10px;
-        }
-        .summary-card .value {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary-color);
-            display: block;
-        }
-        .summary-card .label {
-            font-size: 15px;
-            color: #6c757d;
-        }
+        /* Summary Card Hover (Orange accent) */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .summary-card { transition: all 0.3s ease; cursor: pointer; background-color: var(--background-light); padding: 25px; border-radius: 12px; box-shadow: var(--shadow-light); text-align: center; border-top: 5px solid transparent; }
+        .summary-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); border-top-color: var(--accent-color-1) !important; }
+        .summary-card:hover i { color: var(--accent-color-1); }
+        .summary-card i { font-size: 36px; color: var(--primary-color); margin-bottom: 10px; transition: color 0.3s ease; }
+        .summary-card .value { font-size: 32px; font-weight: 800; color: var(--primary-color); display: block; }
         
-        /* Main Content Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr; /* Two main columns for content */
-            gap: 30px;
-        }
-        
-        /* General Card Styles */
-        .content-card {
-            background-color: var(--background-light);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-light);
-            margin-bottom: 30px;
-            border-top: 5px solid var(--primary-color);
-        }
-        .content-card h2 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
+        /* Main Grid & Content Cards */
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        .content-card { padding: 30px; border-radius: 12px; box-shadow: var(--shadow-light); margin-bottom: 30px; border-top: 5px solid var(--primary-color); }
+        .content-card h2 { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .data-table th { background-color: var(--background-mid); color: var(--text-color-dark); font-weight: 600; text-transform: uppercase; }
+        .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
 
-        /* Table Styles (for Courses and Assignments) */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 15px;
-        }
-        .data-table th, .data-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .data-table th {
-            background-color: var(--background-mid);
-            color: var(--text-color-dark);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        /* Recent Activity / Announcements */
-        .activity-item {
-            padding: 15px 0;
-            border-bottom: 1px dashed #eee;
-        }
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        .activity-item .time {
-            font-size: 12px;
-            color: var(--accent-color-1);
-            font-weight: 600;
-            display: block;
-            margin-top: 5px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .sidebar { transform: translateX(-100%); top: 66px; box-shadow: none; z-index: 999; }
-            .sidebar.active { transform: translateX(0); box-shadow: 4px 0 10px rgba(0,0,0,0.3); }
-            .main-content { margin-left: 0; }
-            .menu-toggle { display: block; }
-            .main-grid { grid-template-columns: 1fr; }
-            .summary-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        }
+        /* Activity Feed */
+        .activity-item { padding: 15px 0; border-bottom: 1px dashed #eee; }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-item .time { font-size: 12px; color: #6c757d; font-weight: 600; display: block; margin-top: 5px; }
+
+        /* Responsive */
+        @media (max-width: 992px) { .main-content { margin-left: 0; } }
     </style>
 </head>
-<body onload="loadUserData()">
+<body onload="loadUserData(); renderDashboard()">
     <header>
         <nav>
             <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
             
             <div class="user-menu">
                 <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
-                <a href="digital.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="login.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
             
             <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
@@ -176,16 +90,19 @@
     <aside class="sidebar" id="sidebar">
         <h3><i class="fas fa-th-large"></i> Faculty Portal</h3>
         <ul>
-            <li><a href="#" class="active"><i class="fas fa-home"></i> Dashboard (Home)</a></li>
-            <li><a href="#"><i class="fas fa-book"></i> My Courses</a></li>
-            <li><a href="#"><i class="fas fa-upload"></i> Assignments</a></li>
-            <li><a href="#"><i class="fas fa-user-graduate"></i> Student List</a></li>
-            <li><a href="#"><i class="fas fa-bullhorn"></i> Announcements</a></li>
-            <li><a href="#"><i class="fas fa-file-signature"></i> Gradebook</a></li>
-            <li><a href="#"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
-            <li><a href="#"><i class="fas fa-comments"></i> Messages</a></li>
-            <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
-            <li><a href="digital.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="faculty-dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard (Home)</a></li>
+            
+            <li><a href="course-management.html"><i class="fas fa-book"></i> My Courses</a></li>
+            <li><a href="assignments.html"><i class="fas fa-upload"></i> Assignments</a></li>
+            <li><a href="gradebook.html"><i class="fas fa-file-signature"></i> Gradebook</a></li>
+            <li><a href="student-list.html"><i class="fas fa-user-graduate"></i> Student List</a></li>
+            
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Announcements</a></li>
+            <li><a href="schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+            <li><a href="faculty-messages.html"><i class="fas fa-comments"></i> Messages</a></li>
+            
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </aside>
 
@@ -195,34 +112,14 @@
             <p>Here's your quick overview of course activities and required actions for today.</p>
         </div>
 
-        <div class="summary-grid">
-            <div class="summary-card" style="border-top: 5px solid var(--primary-color);">
-                <i class="fas fa-book"></i>
-                <span class="value">4</span>
-                <span class="label">Total Courses</span>
+        <div class="summary-grid" id="summary-stats">
             </div>
-            <div class="summary-card" style="border-top: 5px solid var(--accent-color-1);">
-                <i class="fas fa-upload"></i>
-                <span class="value">12</span>
-                <span class="label">Submissions Pending</span>
-            </div>
-            <div class="summary-card" style="border-top: 5px solid var(--accent-color-2);">
-                <i class="fas fa-calendar-alt"></i>
-                <span class="value">2</span>
-                <span class="label">Upcoming Classes</span>
-            </div>
-            <div class="summary-card" style="border-top: 5px solid #6c757d;">
-                <i class="fas fa-user-graduate"></i>
-                <span class="value">180</span>
-                <span class="label">Students Enrolled</span>
-            </div>
-        </div>
 
         <div class="main-grid">
             <div>
-                <div class="content-card">
+                <div class="content-card" onclick="window.location.href='course-management.html'">
                     <h2><i class="fas fa-book"></i> My Active Courses</h2>
-                    <table class="data-table">
+                    <table class="data-table" id="active-courses-table">
                         <thead>
                             <tr>
                                 <th>Code</th>
@@ -231,59 +128,24 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>CS301</td>
-                                <td>Data Structures</td>
-                                <td>45</td>
-                                <td><button class="btn btn-primary btn-action">Manage</button></td>
-                            </tr>
-                            <tr>
-                                <td>CS405</td>
-                                <td>Advanced Algorithms</td>
-                                <td>30</td>
-                                <td><button class="btn btn-primary btn-action">Manage</button></td>
-                            </tr>
-                            <tr>
-                                <td>GE102</td>
-                                <td>Digital Ethics</td>
-                                <td>75</td>
-                                <td><button class="btn btn-primary btn-action">Manage</button></td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody> 
                     </table>
                 </div>
 
-                <div class="content-card" style="border-top-color: var(--accent-color-1);">
+                <div class="content-card" onclick="window.location.href='assignments.html'" style="border-top-color: var(--accent-color-1);">
                     <h2><i class="fas fa-upload"></i> Assignments Awaiting Grading</h2>
-                    <table class="data-table">
+                    <table class="data-table" id="pending-assignments-table">
                         <thead>
                             <tr>
                                 <th>Assignment</th>
                                 <th>Course</th>
-                                <th>Due Date</th>
                                 <th>Pending</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Lab 3 Report</td>
-                                <td>CS301</td>
-                                <td>08 Nov 2025</td>
-                                <td>12</td>
-                                <td><button class="btn btn-secondary btn-action" style="background-color: var(--accent-color-1);">Grade Now</button></td>
-                            </tr>
-                            <tr>
-                                <td>Midterm Project</td>
-                                <td>CS405</td>
-                                <td>15 Nov 2025</td>
-                                <td>5</td>
-                                <td><button class="btn btn-secondary btn-action" style="background-color: var(--primary-color);">View All</button></td>
-                            </tr>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
-                    <button class="btn btn-primary" style="margin-top: 20px;"><i class="fas fa-plus"></i> Create New Assignment</button>
+                    <button class="btn btn-primary" style="margin-top: 20px; background-color: var(--accent-color-1);" onclick="window.location.href='assignments.html'"><i class="fas fa-plus"></i> Create New Assignment</button>
                 </div>
             </div>
 
@@ -295,25 +157,9 @@
 
                 <div class="content-card" style="border-top-color: #6c757d;">
                     <h2><i class="fas fa-bullhorn"></i> Activity & Announcements</h2>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            **5 students submitted Lab 3 Report.**
-                            <span class="time"><i class="fas fa-clock"></i> 2 minutes ago</span>
+                    <div class="activity-feed" id="activity-feed">
                         </div>
-                        <div class="activity-item">
-                            **📢 Internal assessment scheduled for next week.**
-                            <span class="time" style="color: var(--primary-color);"><i class="fas fa-user-cog"></i> Posted: 5 Nov 2025 | Target: 3rd Year CSE</span>
-                        </div>
-                        <div class="activity-item">
-                            **2 new messages received** from CS301 students.
-                            <span class="time"><i class="fas fa-clock"></i> 1 hour ago</span>
-                        </div>
-                        <div class="activity-item">
-                            Gradebook updated for CS405.
-                            <span class="time"><i class="fas fa-clock"></i> Yesterday</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary btn-action" style="margin-top: 15px; background-color: var(--accent-color-2);"><i class="fas fa-plus"></i> Post Announcement</button>
+                    <button class="btn btn-primary btn-action" style="margin-top: 15px; background-color: var(--accent-color-2);" onclick="window.location.href='announcements.html'"><i class="fas fa-plus"></i> Post Announcement</button>
                 </div>
             </div>
         </div>
@@ -324,18 +170,224 @@
     </footer>
 
     <script>
-        // --- 1. Dynamic User Data Loading (Copied from login/student dashboard) ---
+        // --- DATA STRUCTURES (Default Data for Initialization) ---
+        const FACULTY_DATA_KEY = 'campusConnectFacultyData';
+
+        const initialDefaultData = {
+            summary: { totalCourses: 3, submissionsPending: 17, upcomingClasses: 2, studentsEnrolled: 150 },
+            courses: [
+                { id: 'CS301', name: 'Data Structures', students: 45, pendingGrade: 12, avgPerformance: 78, lastActivity: '2 minutes ago' },
+                { id: 'CS405', name: 'Advanced Algorithms', students: 30, pendingGrade: 5, avgPerformance: 85, lastActivity: '1 hour ago' },
+                { id: 'GE102', name: 'Digital Ethics', students: 75, pendingGrade: 0, avgPerformance: 92, lastActivity: 'Yesterday' }
+            ],
+            assignments: [
+                { id: 1, course: 'CS301', name: 'Lab 3 Report', dueDate: '08 Nov 2025', pending: 12, submitted: 33, graded: 21, actionColor: 'var(--accent-color-1)' },
+                { id: 2, course: 'CS405', name: 'Midterm Project', dueDate: '15 Nov 2025', pending: 5, submitted: 15, graded: 10, actionColor: 'var(--primary-color)' },
+                { id: 3, course: 'GE102', name: 'Research Paper Proposal', dueDate: '20 Nov 2025', pending: 0, submitted: 75, graded: 75, actionColor: 'var(--accent-color-2)' }
+            ],
+             activity: [
+                { type: 'submission', course: 'CS301', title: 'Lab 3 Report', count: 5, time: '2 minutes ago' },
+                { type: 'message', course: 'CS405', count: 2, time: '1 hour ago' },
+                { type: 'grade', course: 'GE102', time: 'Yesterday' }
+            ]
+        };
+
+        function getFacultyData() {
+            const dataJSON = localStorage.getItem(FACULTY_DATA_KEY);
+            let data;
+            if (dataJSON) {
+                data = JSON.parse(dataJSON);
+            } else {
+                data = initialDefaultData;
+                localStorage.setItem(FACULTY_DATA_KEY, JSON.stringify(data));
+            }
+            return data;
+        }
+
+        // --- RENDER DYNAMIC DASHBOARD ELEMENTS ---
+
+        function getDynamicStats() {
+            const data = getFacultyData(); 
+            const courses = JSON.parse(localStorage.getItem('facultyCourses')) || data.courses;
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments')) || data.assignments;
+            const studentRoster = JSON.parse(localStorage.getItem('facultyStudentRoster')) || [{id:'S-1001'}, {id:'S-1002'}];
+            const facultySchedule = JSON.parse(localStorage.getItem('facultySchedule')) || [];
+
+            // Calculate live pending submissions
+            const pendingSubmissions = assignments.reduce((sum, assign) => {
+                const pending = (assign.submitted || 0) - (assign.graded || 0);
+                return sum + Math.max(0, pending);
+            }, 0);
+            
+            // Calculate upcoming classes (today or in the future)
+            const now = new Date();
+            const upcomingClasses = facultySchedule.filter(e => new Date(e.datetime) >= now && e.type === 'Lecture').length;
+            
+            return {
+                totalCourses: courses.length,
+                totalStudents: studentRoster.length, 
+                pendingSubmissions: pendingSubmissions, 
+                upcomingClasses: upcomingClasses
+            };
+        }
+        
+        function renderDashboard() {
+            const data = getFacultyData(); 
+            const stats = getDynamicStats(); // Use live stats
+            
+            // --- 1. Render Summary Cards ---
+            const summaryStats = document.getElementById('summary-stats');
+            summaryStats.innerHTML = `
+                <div class="summary-card" onclick="window.location.href='course-management.html'" style="border-top: 5px solid var(--primary-color);">
+                    <i class="fas fa-book"></i>
+                    <span class="value">${stats.totalCourses}</span>
+                    <span class="label">Total Courses</span>
+                </div>
+                <div class="summary-card" onclick="window.location.href='assignments.html'" style="border-top: 5px solid var(--accent-color-1);">
+                    <i class="fas fa-upload"></i>
+                    <span class="value">${stats.pendingSubmissions}</span>
+                    <span class="label">Submissions Pending</span>
+                </div>
+                <div class="summary-card" onclick="window.location.href='schedule.html'" style="border-top: 5px solid var(--accent-color-2);">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="value">${stats.upcomingClasses}</span>
+                    <span class="label">Classes scheduled</span>
+                </div>
+                <div class="summary-card" onclick="window.location.href='student-list.html'" style="border-top: 5px solid #6c757d;">
+                    <i class="fas fa-user-graduate"></i>
+                    <span class="value">${stats.totalStudents}</span>
+                    <span class="label">Students Enrolled</span>
+                </div>
+            `;
+
+            // --- 2. Render My Active Courses Table (Live Courses) ---
+            const coursesTableBody = document.querySelector('#active-courses-table tbody');
+            const courses = JSON.parse(localStorage.getItem('facultyCourses')) || data.courses;
+            const studentRoster = JSON.parse(localStorage.getItem('facultyStudentRoster')) || [];
+            coursesTableBody.innerHTML = '';
+            
+            if (courses.length === 0) {
+                 coursesTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6c757d;">No active courses.</td></tr>`;
+            } else {
+                courses.slice(0, 3).forEach(course => {
+                    // Count students dynamically enrolled in this specific course
+                    const studentCount = studentRoster.filter(s => s.course === course.code).length; 
+
+                    const row = coursesTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${course.code}</td>
+                        <td>${course.name}</td>
+                        <td>${studentCount}</td>
+                        <td><button class="btn btn-primary btn-action" onclick="window.location.href='course-management.html'">Manage</button></td>
+                    `;
+                });
+            }
+
+
+            // --- 3. Render Assignments Awaiting Grading Table (Live Assignments) ---
+            const assignmentsTableBody = document.querySelector('#pending-assignments-table tbody');
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments')) || data.assignments;
+            assignmentsTableBody.innerHTML = '';
+            
+            const pendingAssignments = assignments.filter(a => (a.submitted || 0) - (a.graded || 0) > 0);
+
+            if (pendingAssignments.length === 0) {
+                 assignmentsTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--accent-color-2); font-weight: 600;">🎉 All assignments are graded!</td></tr>`;
+            } else {
+                pendingAssignments.slice(0, 3).forEach(assignment => {
+                    const row = assignmentsTableBody.insertRow();
+                    const pending = (assignment.submitted || 0) - (assignment.graded || 0);
+                    const actionColor = (pending > 10) ? 'var(--accent-color-1)' : 'var(--primary-color)';
+
+                    row.innerHTML = `
+                        <td>${assignment.title}</td>
+                        <td>${assignment.course}</td>
+                        <td>${new Date(assignment.dueDate).toLocaleDateString() || 'N/A'}</td>
+                        <td>${pending}</td>
+                        <td><button class="btn btn-secondary btn-action" style="background-color: ${actionColor};" onclick="window.location.href='assignments.html'">Grade Now</button></td>
+                    `;
+                });
+            }
+
+            // --- 4. Render Chart (Data comes from initial structure) ---
+            renderChart();
+            
+            // --- 5. Render Activity Feed ---
+            renderActivityFeed();
+        }
+
+        // --- CHART RENDERING ---
+        function renderChart() {
+            const data = getFacultyData(); 
+            const chartData = data.courses.slice(0, 3);
+            const canvasContainer = document.getElementById('performanceChart').parentNode;
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+
+            if (window.performanceChartInstance) { window.performanceChartInstance.destroy(); }
+
+            if (chartData.length > 0) {
+                 window.performanceChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.map(c => c.id), 
+                        datasets: [{
+                            label: 'Average Marks (%)',
+                            data: chartData.map(c => c.avgPerformance), 
+                            backgroundColor: ['rgba(0, 123, 255, 0.7)', 'rgba(40, 167, 69, 0.7)', 'rgba(255, 107, 53, 0.7)'],
+                            borderColor: ['var(--primary-color)', 'var(--accent-color-2)', 'var(--accent-color-1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
+                });
+            } else {
+                 canvasContainer.innerHTML = '<p style="text-align:center; padding-top: 50px; color:#6c757d; font-weight: 600;">No course data available for charting.</p>';
+            }
+        }
+        
+        // --- ACTIVITY FEED RENDERING (Updated to use dynamic counts where possible) ---
+        function renderActivityFeed() {
+            const data = getFacultyData();
+            const activityFeed = document.getElementById('activity-feed');
+            
+            const pendingCount = data.summary.submissionsPending;
+            const totalStudents = data.summary.studentsEnrolled;
+            const currentCourses = data.courses;
+
+            // Activity data should pull latest course/student counts
+            const activityItems = `
+                <div class="activity-item">
+                    <strong>${pendingCount} submissions pending grade.</strong>
+                    <span class="time"><i class="fas fa-clock"></i> Just now</span>
+                </div>
+                <div class="activity-item">
+                    <strong>Total ${currentCourses.length} courses active.</strong>
+                    <span class="time" style="color: var(--primary-color);"><i class="fas fa-book"></i> Last course added: ${currentCourses.length > 0 ? currentCourses[0].id : 'N/A'}</span>
+                </div>
+                <div class="activity-item">
+                    <strong>${totalStudents} students enrolled.</strong>
+                    <span class="time"><i class="fas fa-user-graduate"></i> Roster synchronized</span>
+                </div>
+                <div class="activity-item">
+                    <strong>2 new messages received</strong> from students.
+                    <span class="time"><i class="fas fa-clock"></i> 1 hour ago</span>
+                </div>
+            `;
+            activityFeed.innerHTML = activityItems;
+        }
+
+
+        // --- UTILITY FUNCTIONS ---
+        
         function loadUserData() {
-            const userName = localStorage.getItem('userName') || "Prof. Devesh Tyagi"; // Default faculty name
+            const userName = localStorage.getItem('userName') || "Prof. Devesh Tyagi"; 
             const userID = localStorage.getItem('userID') || "F-401";
             
-            // 1. Update the Header Profile Link
             const profileLink = document.getElementById('user-profile-link');
             if (profileLink) {
                 profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`;
             }
 
-            // 2. Update the Main Welcome Message
             const welcomeMessage = document.getElementById('welcome-message');
             if (welcomeMessage) {
                 const title = userName.split(' ')[0].startsWith('Dr.') || userName.split(' ')[0].startsWith('Prof.') ? userName.split(' ')[0] : `Prof. ${userName.split(' ')[0]}`;
@@ -343,56 +395,11 @@
             }
         }
         
-        // --- 2. Chart Simulation ---
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load user data on DOMContentLoaded if body onload didn't fire immediately
-            if (!document.getElementById('welcome-message').textContent.includes('Welcome')) {
-                loadUserData();
-            }
-
-            const ctx = document.getElementById('performanceChart').getContext('2d');
-            const performanceChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['CS301', 'CS405', 'GE102'],
-                    datasets: [{
-                        label: 'Average Marks (%)',
-                        data: [78, 85, 92],
-                        backgroundColor: [
-                            'rgba(0, 123, 255, 0.7)', // Blue
-                            'rgba(40, 167, 69, 0.7)', // Green
-                            'rgba(255, 107, 53, 0.7)' // Orange
-                        ],
-                        borderColor: [
-                            'var(--primary-color)',
-                            'var(--accent-color-2)',
-                            'var(--accent-color-1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true, max: 100 }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        });
-
-
-        // --- 3. Standard UI Functions ---
-        
-        // Toggle sidebar on mobile
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
         }
 
-        // Add active class to clicked sidebar link
         document.querySelectorAll('.sidebar a').forEach(link => {
             link.addEventListener('click', function() {
                 if (window.innerWidth <= 992) {

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - Assignments & Submissions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="digital.css"> 
+
+    <style>
+        /* CSS Variables (from style.css) */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --primary-dark: #0056b3;
+            --accent-color-1: #ff6b35; /* Orange/Highlight */
+            --accent-color-2: #28a745; /* Green */
+            --text-color-dark: #212529;
+            --background-light: #ffffff;
+            --background-mid: #f4f7fa;
+            --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+            --delete-color: #dc3545; /* Red */
+        }
+        
+        /* --- CORE LAYOUT ADJUSTMENT (Full Width) --- */
+        .main-content { 
+            margin-left: 0; 
+            margin-top: 66px; 
+            padding: 30px; 
+        }
+        footer { 
+            margin-left: 0 !important; 
+            padding: 20px 0; 
+        }
+        
+        /* Header Optimization */
+        header { background-color: var(--background-light); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 12px 25px; } 
+
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); transition: color 0.3s ease, transform 0.3s ease; margin-right: 30px; }
+        .logo:hover { color: var(--accent-color-1); transform: scale(1.05); } 
+        .user-menu { display: flex; align-items: center; gap: 15px; }
+
+        /* Dashboard Header */
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; transition: color 0.3s ease; }
+        .dashboard-header h1:hover { color: var(--accent-color-1); cursor: default; }
+
+        .submission-card { background-color: var(--background-light); padding: 30px; border-radius: 12px; box-shadow: var(--shadow-lift); margin-bottom: 40px; border-left: 5px solid var(--accent-color-1); }
+        .submission-card h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        /* Input Styles */
+        .upload-form-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: center; }
+        .upload-form-grid select, .upload-form-grid input[type="file"] { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Poppins', sans-serif; }
+        
+        /* Submissions Table */
+        .submissions-table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 20px; }
+        .submissions-table th, .submissions-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; transition: background-color 0.3s ease; }
+        .submissions-table th { background-color: var(--background-mid); color: var(--text-color-dark); font-weight: 600; text-transform: uppercase; }
+        .submissions-table tbody tr:hover { background-color: #ffe0c2; cursor: pointer; }
+
+        /* Status Colors */
+        .status-submitted { color: var(--accent-color-2); font-weight: 600; }
+        .status-missing { color: var(--delete-color); font-weight: 600; }
+        .status-graded { color: var(--primary-dark); font-weight: 600; }
+        .status-late { color: var(--accent-color-1); font-weight: 600; }
+
+        .btn-action { padding: 8px 12px; font-size: 13px; margin: 3px; border-radius: 6px; }
+
+        /* Header Button (Dashboard Corner Button) */
+        .header-home-btn { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 15px; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; }
+        .header-home-btn:hover { background-color: var(--accent-color-1); color: white; border-color: var(--accent-color-1); }
+    </style>
+</head>
+<body onload="loadUserData(); renderAssignmentTable()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <button class="header-home-btn" onclick="window.location.href='digital.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+            </div>
+            </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>Assignments & Submissions</h1>
+            <p>View assignment details, check your status, and submit your work.</p>
+        </div>
+
+        <div class="submission-card" style="border-left: 5px solid var(--accent-color-2);">
+            <h2><i class="fas fa-paperclip"></i> Quick Submission</h2>
+            <form onsubmit="handleFileUpload(event)">
+                <div class="upload-form-grid">
+                    <select id="assignment-select" required>
+                        <option value="">Select Assignment to Upload</option>
+                        </select>
+                    <input type="file" id="submission-file" required>
+                    <button type="submit" class="btn btn-primary" style="background-color: var(--accent-color-2);"><i class="fas fa-cloud-upload-alt"></i> Submit File</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="submission-card">
+            <h2><i class="fas fa-clipboard-list"></i> Your Assignment Status</h2>
+            <div style="overflow-x: auto;">
+                <table class="submissions-table">
+                    <thead>
+                        <tr>
+                            <th>Assignment Title</th>
+                            <th>Course</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Marks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assignments-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Student Portal | Assignments</p>
+    </footer>
+
+    <script>
+        // Data structure simulating student submission status for faculty assignments
+        let studentSubmissions = JSON.parse(localStorage.getItem('studentSubmissions')) || {
+            'S-56789': {
+                // Initial simulation data (should be updated by faculty's assignment tool)
+                '101': { status: 'Missing', submittedDate: null, grade: null }, 
+                '102': { status: 'Submitted', submittedDate: '2025-11-12T14:30', grade: null }, 
+                '103': { status: 'Graded', submittedDate: '2025-10-24T10:00', grade: '75/75' }, 
+            }
+        };
+
+        function renderAssignmentTable() {
+            const tableBody = document.getElementById('assignments-body');
+            const selectDropdown = document.getElementById('assignment-select');
+            
+            // Fetch live assignments created by faculty
+            const facultyAssignments = JSON.parse(localStorage.getItem('facultyAssignments')) || [
+                 // Add static placeholder data for testing if faculty hasn't created any
+                { id: 1, course: 'CS301', title: 'Data Structures Lab 1', due: '2025-12-01T23:59', marks: 15 },
+                { id: 2, course: 'PHYS 201', title: 'Midterm Essay', due: '2025-12-15T23:59', marks: 40 },
+            ];
+            
+            const studentId = localStorage.getItem('userID') || 'S-56789'; 
+
+            tableBody.innerHTML = '';
+            selectDropdown.innerHTML = '<option value="">Select Assignment to Upload</option>';
+
+            facultyAssignments.forEach(assign => {
+                const subStatus = studentSubmissions[studentId] && studentSubmissions[studentId][assign.id] ? 
+                                  studentSubmissions[studentId][assign.id] : { status: 'Missing', grade: '-' };
+                
+                let statusText = subStatus.status;
+                let statusClass = statusText === 'Graded' ? 'status-graded' : 
+                                  statusText === 'Submitted' ? 'status-submitted' : 
+                                  'status-missing';
+                
+                const dueDate = new Date(assign.due);
+                const isLate = new Date() > dueDate && statusText === 'Missing';
+                if (isLate) statusClass = 'status-late';
+                
+                // Add to table
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td data-label="Title">${assign.title}</td>
+                    <td data-label="Course">${assign.course}</td>
+                    <td data-label="Due Date">${dueDate.toLocaleDateString()}</td>
+                    <td data-label="Status" class="${statusClass}">${isLate ? 'MISSING (LATE)' : statusText}</td>
+                    <td data-label="Marks">${subStatus.grade || (statusText === 'Graded' ? subStatus.grade : assign.marks + ' Max')}</td>
+                    <td data-label="Action">
+                        <button class="btn btn-action btn-primary" onclick="alert('Viewing details for ${assign.title}')">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </td>
+                `;
+
+                // Add to submission dropdown if status is not Final/Graded
+                if (statusText !== 'Graded') {
+                     selectDropdown.innerHTML += `<option value="${assign.id}">${assign.course}: ${assign.title} (${statusText})</option>`;
+                }
+            });
+        }
+        
+        function handleFileUpload(event) {
+            event.preventDefault();
+            const assignmentId = document.getElementById('assignment-select').value;
+            const fileInput = document.getElementById('submission-file');
+            const file = fileInput.files[0];
+            const studentId = localStorage.getItem('userID') || 'S-56789';
+
+            if (!assignmentId) {
+                alert("Please select an assignment.");
+                return;
+            }
+            if (!file) {
+                 alert("Please select a file to upload.");
+                return;
+            }
+
+            // --- SIMULATION: Update status and refresh UI ---
+            const currentSubmissions = studentSubmissions[studentId] || {};
+            currentSubmissions[assignmentId] = {
+                status: 'Submitted',
+                submittedDate: new Date().toISOString(),
+                grade: null
+            };
+            studentSubmissions[studentId] = currentSubmissions;
+            localStorage.setItem('studentSubmissions', JSON.stringify(studentSubmissions));
+            
+            alert(`File "${file.name}" submitted successfully for Assignment ID ${assignmentId}!`);
+            fileInput.value = ''; // Clear file input
+            renderAssignmentTable(); // Refresh table to show new status
+        }
+
+
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Alex R. Sharma";
+            const userID = localStorage.getItem('userID') || "S-56789";
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+        }
+        // Removed toggleSidebar as there is no sidebar
+    </script>
+</body>
+</html>

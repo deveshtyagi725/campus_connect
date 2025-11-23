@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty - Digital Messages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="student-dashboard.css"> 
+
+    <style>
+        /* CSS Variables (from style.css) */
+        :root {
+            --primary-color: #007bff; --accent-color-1: #ff6b35; --accent-color-2: #28a745;
+            --text-color-dark: #212529; --background-light: #ffffff;
+            --background-mid: #f4f7fa; --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Full Width Layout */
+        .main-content { margin-left: 0; margin-top: 66px; padding: 30px; }
+        footer { margin-left: 0 !important; padding: 20px 0; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
+
+        /* Messaging Grid Layout */
+        .messaging-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Contact list vs. Message view */
+            gap: 30px;
+        }
+
+        /* Contact/Inbox Panel */
+        .contact-panel {
+            background-color: var(--background-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lift);
+            padding: 20px;
+            border-left: 5px solid var(--primary-color);
+            min-height: 70vh;
+        }
+        .contact-panel h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        /* Message Compose Area */
+        .compose-card {
+            background-color: var(--background-light);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lift);
+            padding: 30px;
+            border-left: 5px solid var(--accent-color-1);
+        }
+        .compose-card h2 { color: var(--accent-color-1); font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
+        .compose-form input[type="text"], 
+        .compose-form select,
+        .compose-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            resize: vertical;
+        }
+
+        /* Header Button (Dashboard Corner Button) */
+        .header-home-btn { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 15px; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; }
+        .header-home-btn:hover { background-color: var(--accent-color-1); color: white; border-color: var(--accent-color-1); }
+
+        @media (max-width: 992px) {
+            .messaging-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body onload="loadUserData(); populateRecipientList()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <button class="header-home-btn" onclick="window.location.href='faculty-dashboard.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>Digital Messaging Hub</h1>
+            <p>Send direct, secure messages to individual students in your roster.</p>
+        </div>
+
+        <div class="messaging-grid">
+            
+            <div class="contact-panel">
+                <h2><i class="fas fa-user-friends"></i> Student Roster</h2>
+                <select id="recipient-list" size="15" style="width: 100%; height: 80%; border: none; font-family: 'Poppins', sans-serif; font-size: 15px;">
+                    </select>
+            </div>
+            
+            <div class="compose-card">
+                <h2><i class="fas fa-paper-plane"></i> Compose Message</h2>
+                <form class="compose-form" onsubmit="sendMessage(event)">
+                    <label for="recipient-select" style="font-weight: 600; display: block; margin-bottom: 5px;">Recipient:</label>
+                    <select id="recipient-select-form" required>
+                        <option value="">-- Select Recipient (Name/ID) --</option>
+                        </select>
+
+                    <input type="text" id="subject" placeholder="Subject/Topic" required>
+                    
+                    <textarea id="message-body" placeholder="Write your message here..." rows="8" required></textarea>
+                    
+                    <button type="submit" class="btn btn-primary" style="background-color: var(--accent-color-2);">
+                        <i class="fas fa-paper-plane"></i> Send Secure Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Faculty Dashboard | Messaging</p>
+    </footer>
+
+    <script>
+        // Load the student roster dynamically
+        const studentRoster = JSON.parse(localStorage.getItem('facultyStudentRoster')) || [
+            { id: 'S-1001', name: 'Alice Johnson', course: 'CS301', email: 'alice.j@uni.edu' },
+            { id: 'S-2005', name: 'Charlie Davis', course: 'CS405', email: 'charlie.d@uni.edu' },
+        ];
+
+        // Course names are needed for context
+        const facultyCourses = JSON.parse(localStorage.getItem('facultyCourses')) || [];
+
+        function getCourseName(code) {
+             const course = facultyCourses.find(c => c.code === code);
+             return course ? course.name : 'Unknown Course';
+        }
+
+        function populateRecipientList() {
+            const listSelector = document.getElementById('recipient-list');
+            const formSelector = document.getElementById('recipient-select-form');
+            
+            listSelector.innerHTML = '';
+            formSelector.innerHTML = '<option value="">-- Select Recipient (Name/ID) --</option>';
+
+            // Sort students alphabetically for easy searching
+            studentRoster.sort((a, b) => a.name.localeCompare(b.name));
+
+            studentRoster.forEach(student => {
+                const courseDisplay = student.course;
+                const optionText = `${student.name} (${student.id}) - ${courseDisplay}`;
+                const value = student.id;
+
+                const option = `<option value="${value}">${optionText}</option>`;
+                
+                listSelector.innerHTML += option;
+                formSelector.innerHTML += option;
+            });
+            
+            // Sync selection: when user clicks a student in the roster box, auto-select it in the form
+            listSelector.addEventListener('change', () => {
+                formSelector.value = listSelector.value;
+            });
+        }
+
+        function sendMessage(event) {
+            event.preventDefault();
+            const recipientId = document.getElementById('recipient-select-form').value;
+            const subject = document.getElementById('subject').value;
+            const body = document.getElementById('message-body').value;
+            
+            if (!recipientId) {
+                alert('Please select a student recipient before sending.');
+                return;
+            }
+
+            const recipient = studentRoster.find(s => s.id === recipientId);
+            
+            alert(`Message sent successfully!
+---
+Recipient: ${recipient.name} (${recipient.id})
+Subject: ${subject}
+Body: ${body.substring(0, 50)}...
+(Simulated: In a real app, this would be saved to a database.)`);
+            
+            // Clear the form
+            document.getElementById('subject').value = '';
+            document.getElementById('message-body').value = '';
+        }
+
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Prof. Devesh Tyagi"; 
+            const userID = localStorage.getItem('userID') || "F-401";
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+        }
+    </script>
+</body>
+</html>

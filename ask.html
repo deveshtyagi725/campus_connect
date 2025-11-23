@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - Digital Comms Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="digital.css"> 
+
+    <style>
+        /* CSS Variables (from digital.css/style.css) */
+        :root {
+            --primary-color: #007bff; --accent-color-1: #ff6b35; --accent-color-2: #28a745;
+            --text-color-dark: #212529; --background-light: #ffffff;
+            --background-mid: #f4f7fa; --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+            --delete-color: #dc3545;
+        }
+        
+        /* Full Width Layout */
+        .main-content { margin-left: 280px; margin-top: 66px; padding: 30px; }
+        footer { margin-left: 280px !important; padding: 20px 0; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        
+        /* Messaging Grid Layout */
+        .messaging-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+
+        /* 1. Inbox Panel (Left) */
+        .inbox-panel {
+            background-color: var(--background-light); border-radius: 12px; box-shadow: var(--shadow-lift);
+            padding: 20px; border-left: 5px solid var(--primary-color); min-height: 70vh; overflow-y: auto;
+        }
+        .inbox-panel h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        /* Message List Styles */
+        .message-list { list-style: none; padding: 0; }
+        .message-item { padding: 10px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background-color 0.2s ease; font-size: 14px; }
+        .message-item:hover { background-color: var(--background-mid); }
+        .message-item.unread { background-color: #fff3e0; font-weight: 600; border-left: 4px solid var(--accent-color-1); padding-left: 6px; }
+        .message-item .sender { font-weight: 700; color: var(--text-color-dark); display: block; }
+        .message-item .time { font-size: 12px; color: #6c757d; float: right; }
+
+        /* 2. Detail View & Compose Panel (Right) */
+        .detail-panel { display: flex; flex-direction: column; gap: 20px; }
+        .message-view { background-color: var(--background-light); border-radius: 12px; box-shadow: var(--shadow-lift); padding: 30px; border-top: 5px solid var(--accent-color-2); flex-grow: 1; min-height: 30vh; }
+        .compose-card { background-color: var(--background-light); border-radius: 12px; box-shadow: var(--shadow-lift); padding: 30px; border-top: 5px solid var(--accent-color-1); }
+        .compose-form input[type="text"], .compose-form textarea, .compose-form select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Poppins', sans-serif; resize: vertical; }
+
+
+        /* Header Button (Dashboard Corner Button) */
+        .header-home-btn { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 15px; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; }
+        .header-home-btn:hover { background-color: var(--accent-color-1); color: white; border-color: var(--accent-color-1); }
+    </style>
+</head>
+<body onload="loadUserData(); renderInbox()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <a href="login.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <h3><i class="fas fa-th-large"></i> Student Portal</h3>
+        <ul>
+            <li><a href="digital.html"><i class="fas fa-home"></i> Overview</a></li>
+            <li><a href="lecture-materials.html"><i class="fas fa-book-open"></i> Lecture Materials</a></li>
+            <li><a href="assignments-student.html"><i class="fas fa-upload"></i> Assignments & Submissions</a></li>
+            <li><a href="grades.html"><i class="fas fa-chart-line"></i> Grades & Performance</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Campus Announcements</a></li>
+            
+            <li><a href="communication-hub.html" class="active"><i class="fas fa-comments"></i> Messages</a></li>
+            <li><a href="ask.html"><i class="fas fa-question-circle"></i> Ask Doubts (Q&A)</a></li>
+            
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>Digital Communication Hub</h1>
+            <p>Send secure messages and manage your communication history.</p>
+        </div>
+
+        <div class="messaging-grid">
+            
+            <div class="inbox-panel">
+                <h2><i class="fas fa-inbox"></i> Inbox (<span id="unread-count">0</span> Unread)</h2>
+                <ul id="inbox-list" class="message-list">
+                    </ul>
+            </div>
+            
+            <div class="detail-panel">
+                
+                <div class="message-view" id="message-detail-view">
+                    <h3><i class="fas fa-envelope-open"></i> Select a message to view details</h3>
+                    <p>---</p>
+                </div>
+
+                <div class="compose-card">
+                    <h2 id="compose-heading"><i class="fas fa-paper-plane"></i> Compose New Message</h2>
+                    <form class="compose-form" onsubmit="sendMessage(event)">
+                        
+                        <label for="compose-recipient-id" style="font-weight: 600; display: block; margin-bottom: 5px;">Recipient:</label>
+                        <select id="compose-recipient-id" required>
+                            <option value="">-- Select Faculty/Staff --</option>
+                            <option value="F-401">Prof. Devesh Tyagi (F-401)</option>
+                            <option value="F-101">Registrar's Office (F-101)</option>
+                        </select>
+
+                        <input type="text" id="compose-subject" placeholder="Subject/Topic" required>
+                        
+                        <textarea id="compose-body" placeholder="Write your message here..." rows="5" required></textarea>
+                        
+                        <button type="submit" class="btn btn-primary" style="background-color: var(--accent-color-1);">
+                            <i class="fas fa-paper-plane"></i> Send Secure Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Student Portal | Comms Hub</p>
+    </footer>
+
+    <script>
+        // CRITICAL DATA KEY: This is where faculty messages are stored (simulated)
+        const FACULTY_SENT_KEY = 'sentByFaculty'; 
+
+        // Simulated Received Messages Data (acting as our initial database/storage)
+        let studentInboxMessages = [
+            { id: 1, senderId: 'F-401', senderName: 'Prof. Tyagi', subject: 'Re: Lab 3 deadline question', body: 'The deadline is firm, but I can offer an extension until 2 PM tomorrow if you email me a formal request.', time: '2 hours ago', read: false },
+            { id: 2, senderId: 'F-101', senderName: 'Registrar', subject: 'Updated Fee Payment Due Date', body: 'Please note the last date for fee payment has been extended to November 30th. Check the announcements page for details.', time: 'Yesterday', read: false },
+            { id: 3, senderId: 'S-1002', senderName: 'Bob Williams (Peer)', subject: 'Study group for CS301', body: 'Hey Alex, are you free to join a study session tonight at 7 PM?', time: '2 days ago', read: true },
+        ];
+        
+        // --- INBOX RENDERING AND MANAGEMENT ---
+
+        // Function to render the inbox list
+        function renderInbox() {
+            const list = document.getElementById('inbox-list');
+            const unreadCountElement = document.getElementById('unread-count');
+            list.innerHTML = '';
+            
+            // 1. Combine Static Messages with Messages Sent by Faculty
+            const facultySentMessages = JSON.parse(localStorage.getItem(FACULTY_SENT_KEY)) || [];
+            
+            // Filter messages relevant to the current student (S-56789 in the simulation)
+            const studentId = localStorage.getItem('userID') || 'S-56789';
+
+            // Filter the facultySentMessages array to only include messages sent TO this student
+            const receivedFacultyReplies = facultySentMessages.filter(msg => msg.recipientId === studentId);
+            
+            // Use a Set to track IDs and avoid duplicates when merging
+            const allMessages = [...studentInboxMessages];
+            const existingIds = new Set(studentInboxMessages.map(m => m.id));
+
+            // Merge dynamic faculty replies into the inbox
+            receivedFacultyReplies.forEach(reply => {
+                // Generate a unique ID if needed, or use the faculty's message ID
+                if (!existingIds.has(reply.id)) {
+                    allMessages.push(reply);
+                }
+            });
+
+
+            let unreadCount = 0;
+
+            // Sort unread first
+            allMessages.sort((a, b) => {
+                if (a.read === false && b.read === true) return -1;
+                if (a.read === true && b.read === false) return 1;
+                return 0;
+            });
+
+            allMessages.forEach(msg => {
+                if (!msg.read) unreadCount++;
+
+                const listItem = document.createElement('li');
+                listItem.className = `message-item ${!msg.read ? 'unread' : ''}`;
+                listItem.onclick = () => viewMessageDetail(msg.id);
+                
+                listItem.innerHTML = `
+                    <span class="time">${msg.time}</span>
+                    <span class="sender">${msg.senderName} (${msg.senderId})</span>
+                    <div class="subject">${msg.subject}</div>
+                `;
+                list.appendChild(listItem);
+            });
+            
+            unreadCountElement.textContent = unreadCount;
+        }
+
+        // Function to display message detail
+        function viewMessageDetail(id) {
+            // Check both static and dynamic arrays for the message
+            let msg = studentInboxMessages.find(m => m.id === id);
+            if (!msg) {
+                const facultySentMessages = JSON.parse(localStorage.getItem(FACULTY_SENT_KEY)) || [];
+                msg = facultySentMessages.find(m => m.id === id);
+            }
+
+            const detailView = document.getElementById('message-detail-view');
+            
+            if (!msg) return;
+
+            // 1. Mark as read and update UI (Only change read status if it was unread)
+            if (!msg.read) {
+                // Note: In a true dynamic system, we'd update localStorage for the student's read status here.
+                msg.read = true;
+                renderInbox(); 
+            }
+
+            // 2. Populate Detail View
+            detailView.innerHTML = `
+                <h3>Subject: ${msg.subject}</h3>
+                <p><strong>From:</strong> ${msg.senderName} (${msg.senderId})</p>
+                <p><strong>Time:</strong> ${msg.time}</p>
+                <hr style="margin: 15px 0;">
+                <p style="white-space: pre-wrap; line-height: 1.7;">${msg.body}</p>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="prepareReply('${msg.senderId}', '${msg.subject}')" style="background-color: var(--accent-color-2);">
+                        <i class="fas fa-reply"></i> Reply
+                    </button>
+                    <button class="btn btn-primary" style="background-color: var(--primary-dark); margin-left: 10px;" onclick="alert('Simulating Archiving message ${msg.id}')">
+                        <i class="fas fa-archive"></i> Archive
+                    </button>
+                </div>
+            `;
+            
+            // 3. Prepare Compose form for reply
+            prepareReply(msg.senderId, msg.subject);
+        }
+
+        // Function to prepare the compose form for a specific recipient
+        function prepareReply(recipientId, subject) {
+            document.getElementById('compose-heading').innerHTML = '<i class="fas fa-reply-all"></i> Replying...';
+            document.getElementById('compose-recipient-id').value = recipientId;
+            document.getElementById('compose-subject').value = `Re: ${subject}`;
+            document.getElementById('compose-body').focus();
+        }
+
+        // Function to send a new message (Simulation)
+        function sendMessage(event) {
+            event.preventDefault();
+            const recipientId = document.getElementById('compose-recipient-id').value;
+            const subject = document.getElementById('compose-subject').value;
+            const body = document.getElementById('compose-body').value;
+            const studentName = localStorage.getItem('userName') || "Student"; 
+
+            alert(`Message sent successfully from ${studentName} to ${recipientId}: "${subject}". (Simulated)`);
+            
+            // Clear form and reset heading
+            document.querySelector('.compose-form').reset();
+            document.getElementById('compose-heading').innerHTML = '<i class="fas fa-paper-plane"></i> Compose New Message';
+            document.getElementById('compose-recipient-id').value = ''; 
+        }
+
+        // --- UI & DATA LOADING (Consistency functions) ---
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Alex R. Sharma";
+            const userID = localStorage.getItem('userID') || "S-56789";
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+        }
+        function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('active'); }
+        
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) { document.getElementById('sidebar').classList.remove('active'); }
+                document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

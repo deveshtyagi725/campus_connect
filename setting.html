@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="student-dashboard.css">
+    <style>
+        /* CSS Variables (from shared styles) */
+        :root {
+            --primary-color: #007bff; --primary-dark: #0056b3;
+            --accent-color-1: #ff6b35; --accent-color-2: #28a745;
+            --text-color-dark: #212529; --background-light: #ffffff;
+            --background-mid: #f4f7fa; --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+            --delete-color: #dc3545;
+        }
+
+        /* --- NOTIFICATION BADGE STYLES --- */
+        .notification-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        #notification-badge {
+            position: absolute;
+            top: 5px; /* Adjust vertically */
+            right: 15px; /* Adjust horizontally */
+            background-color: var(--delete-color);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 50%;
+            padding: 3px 6px;
+            min-width: 18px;
+            text-align: center;
+            line-height: 1.2;
+            z-index: 10;
+        }
+        
+        /* Full Width Layout */
+        .main-content { margin-left: 0; margin-top: 66px; padding: 30px; }
+        footer { margin-left: 0 !important; padding: 20px 0; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; transition: color 0.3s ease; }
+        .dashboard-header h1:hover { color: var(--accent-color-1); cursor: default; }
+
+        .settings-card {
+            background-color: var(--background-light);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lift);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+        }
+        .settings-card h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+
+        .profile-form input, .profile-form select {
+            width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Poppins', sans-serif;
+        }
+
+        .setting-option {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px dashed #eee;
+        }
+        .setting-option:last-child { border-bottom: none; }
+        .setting-option label { font-weight: 600; }
+        
+        /* Header Button (Dashboard Corner Button) */
+        .header-home-btn { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); padding: 8px 15px; border-radius: 8px; font-size: 14px; transition: all 0.3s ease; }
+        .header-home-btn:hover { background-color: var(--accent-color-1); color: white; border-color: var(--accent-color-1); }
+    </style>
+</head>
+<body onload="loadUserData(); checkNotifications()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                
+                <div class="notification-container">
+                    <span id="notification-badge" style="display:none;"></span>
+                    <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                </div>
+                
+                <button class="header-home-btn" onclick="window.location.href='faculty-dashboard.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-cog"></i> Account Settings</h1>
+            <p>Manage your profile information and portal preferences.</p>
+        </div>
+
+        <div class="settings-card">
+            <h2>Profile Information</h2>
+            <form class="profile-form" onsubmit="saveProfile(event)">
+                <input type="text" id="profile-name" value="Prof. Devesh Tyagi" placeholder="Full Name">
+                <input type="email" id="profile-email" value="devesh.tyagi@uni.edu" placeholder="Email">
+                <input type="text" id="profile-dept" value="Computer Science" placeholder="Department">
+                <input type="text" id="profile-id" value="F-401" disabled>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Profile</button>
+            </form>
+        </div>
+
+        <div class="settings-card" style="border-left: 5px solid var(--accent-color-1);">
+            <h2>Security & Preferences</h2>
+            <div class="setting-option">
+                <label>Change Password</label>
+                <button class="btn btn-action btn-primary" onclick="alert('Simulating Password Change Form...')"><i class="fas fa-lock"></i> Update</button>
+            </div>
+            <div class="setting-option">
+                <label>Notification Emails</label>
+                <input type="checkbox" checked>
+            </div>
+            <div class="setting-option">
+                <label>Theme</label>
+                <select>
+                    <option>Light (Default)</option>
+                    <option>Dark Mode</option>
+                </select>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Faculty Dashboard | Settings</p>
+    </footer>
+
+    <script>
+        // --- NOTIFICATION LOGIC ---
+        function getPendingItems() {
+            // Check for unread messages (simulated for simplicity)
+            const receivedMessages = [
+                { id: 1, read: false }, // Simulate 1 unread message
+                { id: 2, read: false },
+            ];
+            const unreadMessages = receivedMessages.filter(m => m.read === false).length;
+
+            // Check for pending assignments (reading from local storage, set by assignments.html)
+            const assignments = JSON.parse(localStorage.getItem('facultyAssignments')) || [];
+            
+            const pendingSubmissions = assignments.reduce((sum, assign) => {
+                const pending = (assign.submitted || 0) - (assign.graded || 0);
+                return sum + Math.max(0, pending);
+            }, 0) || 12; // Use 12 as a default pending count for visualization
+
+            return unreadMessages + pendingSubmissions;
+        }
+
+        function checkNotifications() {
+            const pendingCount = getPendingItems();
+            const badge = document.getElementById('notification-badge');
+            
+            if (badge) {
+                if (pendingCount > 0) {
+                    badge.textContent = pendingCount;
+                    badge.style.display = 'inline-block';
+                    // Optional: Shake or highlight the badge for immediate visibility
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        // --- PROFILE LOGIC ---
+        function loadUserData() {
+            // Load persistent data set during login
+            const userName = localStorage.getItem('userName') || "Prof. Devesh Tyagi"; 
+            const userID = localStorage.getItem('userID') || "F-401";
+            
+            // Update header display
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+
+            // Populate form fields for editing
+            document.getElementById('profile-name').value = userName;
+            document.getElementById('profile-id').value = userID;
+            // Note: Email and Dept fields would typically be loaded here from storage too
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+            const newName = document.getElementById('profile-name').value;
+            const newEmail = document.getElementById('profile-email').value;
+            
+            // Save updates back to localStorage (Simulating persistent change)
+            localStorage.setItem('userName', newName);
+            // localStorage.setItem('userEmail', newEmail); // Uncomment if tracking email
+
+            alert(`Profile updated successfully! Welcome, ${newName}.`);
+            loadUserData(); // Reload header with new name
+        }
+    </script>
+</body>
+</html>

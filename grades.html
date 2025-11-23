@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - Grades & Performance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="digital.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* CSS Variables (from digital.css/style.css) */
+        :root {
+            --primary-color: #007bff; --accent-color-1: #ff6b35; --accent-color-2: #28a745;
+            --background-light: #ffffff; --background-mid: #f4f7fa; --shadow-lift: 0 8px 25px rgba(0,0,0,0.15);
+            --delete-color: #dc3545;
+        }
+        /* Full Width Layout */
+        .main-content { margin-left: 280px; margin-top: 66px; padding: 30px; }
+        footer { margin-left: 280px !important; padding: 20px 0; }
+        .dashboard-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #eee; }
+        .dashboard-header h1 { color: var(--text-color-dark); font-weight: 800; font-size: 36px; margin-bottom: 5px; }
+
+        .progress-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .summary-box { background-color: var(--background-light); padding: 30px; border-radius: 12px; box-shadow: var(--shadow-lift); margin-bottom: 30px; border-top: 5px solid var(--accent-color-2); }
+        .summary-box h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 15px; }
+        
+        .gpa-value { font-size: 48px; font-weight: 800; color: var(--accent-color-2); display: block; margin-bottom: 10px; }
+        .gpa-label { font-size: 16px; color: #6c757d; }
+
+        /* Grades Table */
+        .grades-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .grades-table th, .grades-table td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        .grades-table th { background-color: var(--primary-dark); color: white; font-weight: 600; text-transform: uppercase; }
+        .grades-table td { font-weight: 500; }
+        
+        /* Grade Colors */
+        .grade-A { color: var(--accent-color-2); }
+        .grade-B { color: var(--primary-color); }
+        .grade-C { color: var(--accent-color-1); }
+        .grade-F { color: var(--delete-color); }
+        .grade-total { font-weight: 700; color: var(--text-color-dark); }
+
+        @media (max-width: 992px) { .progress-grid { grid-template-columns: 1fr; } .main-content { margin-left: 0; } footer { margin-left: 0 !important; } }
+    </style>
+</head>
+<body onload="loadUserData(); renderGradeChart(); loadStudentGrades()">
+    <header>
+        <nav>
+            <div class="logo"><i class="fas fa-graduation-cap"></i> Campus Connect</div>
+            <div class="user-menu">
+                <a href="#" class="profile-link" id="user-profile-link"><i class="fas fa-user-circle"></i> Loading...</a>
+                <a href="login.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        </nav>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <h3><i class="fas fa-th-large"></i> Student Portal</h3>
+        <ul>
+            <li><a href="digital.html"><i class="fas fa-home"></i> Overview</a></li>
+            <li><a href="lecture-materials.html"><i class="fas fa-book-open"></i> Lecture Materials</a></li>
+            <li><a href="assignments-student.html"><i class="fas fa-upload"></i> Assignments & Submissions</a></li>
+            <li class="current-page"><a href="grades.html" class="active"><i class="fas fa-chart-line"></i> Grades & Performance</a></li>
+            <li><a href="announcements.html"><i class="fas fa-bullhorn"></i> Campus Announcements</a></li>
+            <li><a href="communication-hub.html"><i class="fas fa-comments"></i> Digital Comms Hub</a></li>
+            <li><a href="ask-doubts.html"><i class="fas fa-question-circle"></i> Ask Doubts (Q&A)</a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1>Academic Progress Report</h1>
+            <p>Monitor your performance, track GPA, and view official marks.</p>
+        </div>
+
+        <div class="progress-grid">
+            <div class="summary-box">
+                <h2>Current CPI / GPA</h2>
+                <span class="gpa-value" id="current-gpa">--</span>
+                <p class="gpa-label">Calculated from posted grades.</p>
+                <button class="btn btn-primary" style="margin-top: 15px;">View Detailed GPA Breakdown</button>
+            </div>
+            
+            <div class="summary-box">
+                <h2>Semester Trend</h2>
+                <canvas id="gradeTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2><i class="fas fa-table"></i> Detailed Gradebook</h2>
+            <div style="overflow-x: auto;">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Final Grade</th>
+                            <th>Total Marks (Max)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grades-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Campus Connect | Student Portal | Grades</p>
+    </footer>
+
+    <script>
+        // Faculty Assignments (Needed to calculate Max Marks)
+        const facultyAssignments = JSON.parse(localStorage.getItem('facultyAssignments')) || [];
+        
+        // Faculty course list (for fetching course name)
+        const facultyCourses = JSON.parse(localStorage.getItem('facultyCourses')) || [];
+
+        function getCourseName(code) {
+             const course = facultyCourses.find(c => c.code === code);
+             return course ? course.name : 'Unknown Course';
+        }
+
+        // --- NEW: Helper to get MAX marks for a course from facultyAssignments ---
+        function getMaxMarksForCourse(courseCode) {
+            const courseAssignments = facultyAssignments.filter(a => a.course === courseCode);
+            return courseAssignments.reduce((sum, a) => sum + (a.marks || 0), 0);
+        }
+
+        function calculateTotal(gradesObject) {
+            // Sums up all grades assigned to a student across multiple assignments
+            return Object.values(gradesObject).reduce((sum, grade) => sum + grade, 0);
+        }
+        
+        function getLetterGrade(totalPercentage) {
+            if (totalPercentage >= 90) return { grade: 'A+', class: 'grade-A' };
+            if (totalPercentage >= 80) return { grade: 'A', class: 'grade-A' };
+            if (totalPercentage >= 70) return { grade: 'B+', class: 'grade-B' };
+            if (totalPercentage >= 60) return { grade: 'B', class: 'grade-B' };
+            if (totalPercentage >= 50) return { grade: 'C', class: 'grade-C' };
+            return { grade: 'F', class: 'grade-F' };
+        }
+
+        function loadStudentGrades() {
+            // Student ID (set on login/registration)
+            const studentId = localStorage.getItem('registeredUserID') || 'S-1001'; 
+            
+            // Grades saved by faculty
+            const facultyGrades = JSON.parse(localStorage.getItem('facultyCourseGrades')) || {};
+            // CPI calculated by faculty
+            const studentCPIs = JSON.parse(localStorage.getItem('studentCPIs')) || {};
+
+            const tableBody = document.getElementById('grades-body');
+            tableBody.innerHTML = '';
+            
+            let postedCoursesCounted = 0;
+            
+            // --- 1. Load Individual Course Grades ---
+            
+            // Iterate through all courses that faculty has grade data for
+            Object.keys(facultyGrades).forEach(courseCode => {
+                const courseGrades = facultyGrades[courseCode];
+                const studentAssignmentsGrades = courseGrades[studentId]; // Get grades object for the current student
+                
+                if (studentAssignmentsGrades && Object.keys(studentAssignmentsGrades).length > 0) {
+                    
+                    const maxMarks = getMaxMarksForCourse(courseCode); // Get dynamic max marks
+                    
+                    if (maxMarks === 0) return; // Skip if max marks is 0 (no assignments posted/marks defined)
+
+                    const totalMarksEarned = calculateTotal(studentAssignmentsGrades);
+                    const totalPercentage = (totalMarksEarned / maxMarks) * 100;
+                    const gradeInfo = getLetterGrade(totalPercentage);
+                    
+                    postedCoursesCounted++;
+                    
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${courseCode}</td>
+                        <td>${getCourseName(courseCode)}</td>
+                        <td class="${gradeInfo.class}">${gradeInfo.grade}</td>
+                        <td class="grade-total">${totalMarksEarned} / ${maxMarks}</td>
+                        <td style="color: var(--accent-color-2);">Posted</td>
+                    `;
+                }
+            });
+
+            // --- 2. Update CPI Summary ---
+            const studentCPI = studentCPIs[studentId] || 'N/A';
+            document.getElementById('current-gpa').textContent = studentCPI;
+            
+            if (postedCoursesCounted === 0) {
+                 tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No grades have been posted by your faculty yet.</td></tr>';
+            }
+        }
+
+        function renderGradeChart() {
+            const ctx = document.getElementById('gradeTrendChart').getContext('2d');
+            const data = {
+                labels: ['Yr 1 Sem 1', 'Yr 1 Sem 2', 'Yr 2 Sem 1 (Current)'],
+                datasets: [{
+                    label: 'Semester GPA',
+                    data: [3.2, 3.4, 3.5],
+                    borderColor: 'var(--accent-color-1)',
+                    backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            };
+            new Chart(ctx, { type: 'line', data: data, options: { responsive: true, scales: { y: { beginAtZero: false, max: 4.0 } } } });
+        }
+
+        function loadUserData() {
+            const userName = localStorage.getItem('userName') || "Alex R. Sharma";
+            const userID = localStorage.getItem('registeredUserID') || "S-56789"; 
+            const profileLink = document.getElementById('user-profile-link');
+            if (profileLink) { profileLink.innerHTML = `<i class="fas fa-user-circle"></i> ${userName} (${userID})`; }
+        }
+        function toggleSidebar() { const sidebar = document.getElementById('sidebar'); sidebar.classList.toggle('active'); }
+    </script>
+</body>
+</html>
